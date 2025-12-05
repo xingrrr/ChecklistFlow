@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow | Cloud</title>
+    <style>
+        /* --- XERO-INSPIRED DESIGN SYSTEM --- */
+        :root {
+            --primary: #13B5EA;
+            --primary-dark: #0e8cb5;
+            --navy: #0B3C5D;
+            --text-main: #27333B;
+            --text-light: #677581;
+            --bg-body: #F4F5F6;
+            --bg-card: #FFFFFF;
+            --border: #E0E0E0;
+            --success: #33b679;
+            --radius: 6px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hidden { display: none !important; }
+        
+        button {
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+        .btn-secondary:hover { background: #f0faff; }
+        .btn-text { background: transparent; color: var(--text-light); padding: 4px 8px; }
+        .btn-text:hover { color: var(--navy); text-decoration: underline; }
+
+        /* Icon Buttons */
+        .btn-icon { 
+            padding: 6px; background: transparent; color: #aaa; border-radius: 4px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+        }
+        .btn-icon:hover { background: #f0f0f0; color: var(--navy); }
+        .btn-icon.active { color: var(--primary); background: #e6f7ff; }
+
+        header { text-align: center; margin-bottom: 20px; position: relative;}
+        h1, h2 { color: var(--navy); margin-top: 0; }
+        h1 { font-size: 1.5rem; letter-spacing: -0.5px; }
+
+        .sync-badge {
+            font-size: 0.75rem; background: #e6f7ff; color: var(--primary); padding: 4px 8px; border-radius: 12px; display: inline-block; margin-top: 5px;
+        }
+
+        /* --- DASHBOARD --- */
+        #dashboard-view .checklist-grid { display: grid; gap: 15px; }
+        .checklist-card {
+            background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 4px solid var(--primary); transition: transform 0.2s; display: flex; justify-content: space-between; align-items: center;
+        }
+        .checklist-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; font-weight: 600; }
+        .card-stats { font-size: 0.8rem; color: var(--text-light); }
+        .card-actions { display: flex; gap: 10px; }
+
+        /* --- EDITOR --- */
+        #editor-view { background: var(--bg-card); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text-main); }
+        input[type="text"]:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+        .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .editor-item { background: #fff; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 8px; transition: box-shadow 0.2s; }
+        .editor-main-row { display: flex; align-items: center; padding: 8px; gap: 8px; }
+        .drag-handle { color: #ccc; cursor: grab; font-size: 1.2rem; padding: 0 5px; user-select: none; }
+        .editor-item input.step-input { flex-grow: 1; border: none; padding: 5px; font-size: 1rem; }
+        .editor-item input.step-input:focus { outline: none; }
+
+        .editor-extra-panel { padding: 8px 10px 8px 45px; background: #f9f9f9; border-top: 1px solid #eee; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .editor-extra-panel input { padding: 5px; font-size: 0.9rem; }
+        .editor-extra-panel select { padding: 5px; border-radius: 4px; border: 1px solid #ddd; }
+
+        /* --- RUNNER --- */
+        #runner-view { display: flex; flex-direction: column; height: 100%; max-height: 100vh; }
+        .runner-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .timer { font-family: 'Courier New', monospace; font-size: 1.5rem; color: var(--navy); font-weight: bold; background: #e6f7ff; padding: 4px 12px; border-radius: 4px; }
+        
+        .focus-list { list-style: none; padding: 0; flex-grow: 1; overflow-y: auto; position: relative; margin: 0; padding-right: 5px; }
+        .focus-item { padding: 18px; margin-bottom: 15px; border-radius: var(--radius); background: white; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; gap: 10px; cursor: pointer; border: 1px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .focus-row-main { display: flex; align-items: center; gap: 15px; width: 100%; }
+
+        .focus-item.active { transform: scale(1.02); box-shadow: 0 8px 20px rgba(19, 181, 234, 0.15); border-color: var(--primary); opacity: 1; z-index: 10; }
+        .focus-item.completed { opacity: 0.4; transform: scale(0.98); background: #f9f9f9; }
+        .focus-item.completed .focus-text { text-decoration: line-through; color: var(--text-light); }
+        .focus-item.upcoming { opacity: 0.3; filter: blur(1px); transform: scale(0.98); pointer-events: none; }
+        .focus-item.next-up { opacity: 0.7; filter: blur(0); transform: scale(1); pointer-events: none; }
+
+        .checkbox-circle { width: 26px; height: 26px; border: 2px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; transition: all 0.2s; font-size: 16px; }
+        .focus-item.active .checkbox-circle { border-color: var(--primary); }
+        .focus-item.completed .checkbox-circle { background: var(--success); border-color: var(--success); }
+        
+        .runner-link-btn { margin-left: auto; color: var(--primary); text-decoration: none; font-size: 0.9rem; padding: 4px 8px; border: 1px solid var(--primary); border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+        .runner-link-btn:hover { background: #f0faff; }
+
+        .loop-decision { background: #fff8e1; border: 1px solid #ffe082; padding: 10px; border-radius: 4px; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .runner-footer { margin-top: auto; text-align: center; padding-top: 20px; border-top: 1px solid var(--border); background: var(--bg-body); }
+        .runner-stats { font-size: 1rem; color: var(--navy); background: #dff0d8; padding: 10px; border-radius: var(--radius); margin-bottom: 15px; border: 1px solid #d6e9c6; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 id="app-title">FocusFlow</h1>
+        <div id="sync-status" class="sync-badge">Connecting to Cloud...</div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-view">
+        <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
+            <button class="btn-primary" onclick="window.app.createNew()">+ New Checklist</button>
+        </div>
+        <div id="checklist-list" class="checklist-grid"></div>
+        <div id="empty-state" class="hidden" style="text-align: center; color: #aaa; margin-top: 60px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">☁️</div>
+            <p>Ready for your first checklist.</p>
+        </div>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editor-view" class="hidden">
+        <h2 style="margin-bottom: 15px;">Edit Checklist</h2>
+        <div class="input-group">
+            <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off" style="font-weight: bold;">
+        </div>
+        <div class="input-group" style="margin-bottom:5px;">
+            <label>Steps</label>
+        </div>
+        <div id="editor-items" class="editor-items-list"></div>
+        <button class="btn-secondary" style="width:100%; margin-bottom: 20px; border-style: dashed; opacity: 0.6;" onclick="window.app.addEditorItem()">+ Add Step</button>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 15px; margin-top: auto;">
+            <button class="btn-text" onclick="window.app.deleteChecklist()" style="color: #d9534f;">Delete</button>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-text" onclick="window.app.showDashboard()">Cancel</button>
+                <button class="btn-primary" onclick="window.app.saveChecklist()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RUNNER -->
+    <div id="runner-view" class="hidden">
+        <div class="runner-header">
+            <h2 id="runner-title" style="margin:0; font-size:1.2rem;">Title</h2>
+            <div id="runner-timer" class="timer">00:00</div>
+        </div>
+        <ul id="runner-list" class="focus-list"></ul>
+        <div class="runner-footer">
+            <div id="runner-stats-display" class="runner-stats hidden">
+                <strong>Session Complete!</strong><br> Time: <span id="final-time"></span>
+            </div>
+            <button id="btn-complete" class="btn-primary hidden" style="width: 100%; padding: 12px; font-size: 1.1em;" onclick="window.app.finishRun()">Complete Session</button>
+            <button id="btn-abort" class="btn-text" onclick="window.app.showDashboard()">Abort Session</button>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE MODULE -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+    /* --- 1. PASTE YOUR CONFIG HERE --- */
+    // REPLACE the object below with the keys you copied from Firebase Console!
+    const firebaseConfig = {
+        apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
+  authDomain: "checklistflow-f9fe5.firebaseapp.com",
+  projectId: "checklistflow-f9fe5",
+  storageBucket: "checklistflow-f9fe5.firebasestorage.app",
+  messagingSenderId: "630257615694",
+  appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
+    };
+    /* -------------------------------- */
+
+    const fbApp = initializeApp(firebaseConfig);
+    const auth = getAuth(fbApp);
+    const db = getFirestore(fbApp);
+    
+    // Using a consistent ID for your production app
+    const appId = 'focusflow-production'; 
+    
+    // Global User State
+    let currentUser = null;
+    let unsubscribeSnapshot = null;
+
+    // 2. DEFINE APP LOGIC
+    window.app = {
+        data: [], 
+        activeId: null,
+        timerInterval: null,
+        startTime: null,
+        dragSrcEl: null,
+
+        // --- AUTH & INIT ---
+        init: async function() {
+            // Simple Anonymous Auth
+            await signInAnonymously(auth);
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('sync-status').innerText = "☁️ Synced";
+                    this.setupRealtimeListener();
+                } else {
+                    document.getElementById('sync-status').innerText = "⚠️ Offline";
+                }
+            });
+        },
+
+        setupRealtimeListener: function() {
+            if (!currentUser) return;
+            // Using the production appId
+            const q = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists');
+            
+            unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+                const newData = [];
+                snapshot.forEach((doc) => {
+                    newData.push({ ...doc.data(), id: doc.id });
+                });
+
+                // NO MIGRATION NEEDED IN PROD - We start fresh on your new domain
+                this.data = newData;
+                this.data.sort((a, b) => (b.stats?.runCount || 0) - (a.stats?.runCount || 0));
+                
+                if (this.activeId && !document.getElementById('runner-view').classList.contains('hidden')) {
+                    const activeList = this.data.find(l => l.id === this.activeId);
+                    if (activeList) this.renderRunnerList(activeList);
+                } else if (!this.activeId && !document.getElementById('dashboard-view').classList.contains('hidden')) {
+                     this.showDashboard(); 
+                }
+            }, (error) => {
+                console.error("Firestore error:", error);
+                document.getElementById('sync-status').innerText = "⚠️ Sync Error";
+            });
+        },
+
+        // --- DASHBOARD ---
+        showDashboard: function() {
+            this.stopTimer();
+            this.activeId = null;
+            
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('editor-view').classList.add('hidden');
+            document.getElementById('runner-view').classList.add('hidden');
+
+            const listEl = document.getElementById('checklist-list');
+            listEl.innerHTML = '';
+
+            if (this.data.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('empty-state').classList.add('hidden');
+
+            this.data.forEach(list => {
+                const runs = list.stats?.runCount || 0;
+                const last = list.stats?.lastDuration ? `• Last: ${list.stats.lastDuration}` : '';
+                const card = document.createElement('div');
+                card.className = 'checklist-card';
+                card.innerHTML = `
+                    <div class="card-info">
+                        <h3>${list.title}</h3>
+                        <div class="card-stats">Runs: ${runs} ${last}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-secondary" onclick="window.app.edit('${list.id}')">Edit</button>
+                        <button class="btn-primary" onclick="window.app.run('${list.id}')">Start</button>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        },
+
+        // --- EDITOR (Writes to Firebase) ---
+        createNew: function() {
+            this.activeId = null;
+            this.renderEditor('', []);
+        },
+
+        edit: function(id) {
+            this.activeId = id;
+            const list = this.data.find(l => l.id === id);
+            this.renderEditor(list.title, JSON.parse(JSON.stringify(list.items)));
+        },
+
+        renderEditor: function(title, items) {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('editor-view').classList.remove('hidden');
+            
+            document.getElementById('edit-title').value = title;
+            const container = document.getElementById('editor-items');
+            container.innerHTML = '';
+
+            if (items.length === 0) items = [{text:''}];
+
+            items.forEach((item, index) => {
+                this.addEditorItemDOM(item, index);
+            });
+        },
+
+        addEditorItem: function(insertAfterIndex = null) {
+            const container = document.getElementById('editor-items');
+            const item = { text: '', url: '', loopTarget: null };
+            
+            if (insertAfterIndex !== null) {
+                const newEl = this.createEditorItemEl(item);
+                const siblings = Array.from(container.children);
+                if (siblings[insertAfterIndex]) siblings[insertAfterIndex].after(newEl);
+                else container.appendChild(newEl);
+                newEl.querySelector('.step-input').focus();
+            } else {
+                const newEl = this.createEditorItemEl(item);
+                container.appendChild(newEl);
+                container.scrollTop = container.scrollHeight;
+                newEl.querySelector('.step-input').focus();
+            }
+            this.updateLoopDropdowns();
+        },
+
+        createEditorItemEl: function(item) {
+            const div = document.createElement('div');
+            div.className = 'editor-item';
+            div.draggable = true;
+            div.addEventListener('dragstart', this.handleDragStart.bind(this));
+            div.addEventListener('dragover', this.handleDragOver.bind(this));
+            div.addEventListener('drop', this.handleDrop.bind(this));
+            div.addEventListener('dragend', this.handleDragEnd.bind(this));
+
+            div.innerHTML = `
+                <div class="editor-main-row">
+                    <span class="drag-handle">☰</span>
+                    <input type="text" class="step-input" value="${item.text || ''}" placeholder="">
+                    <button class="btn-icon ${item.url ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'link')" title="Add Link">🔗</button>
+                    <button class="btn-icon ${item.loopTarget !== null && item.loopTarget !== undefined ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'loop')" title="Loop/Branch">🔁</button>
+                    <button class="btn-icon" onclick="this.closest('.editor-item').remove(); window.app.updateLoopDropdowns();" title="Remove" style="color:#d9534f;">✕</button>
+                </div>
+                <div class="editor-extra-panel hidden link-panel">
+                    <span>URL:</span> <input type="text" class="url-input" value="${item.url || ''}" placeholder="https://..." style="flex-grow:1;">
+                </div>
+                <div class="editor-extra-panel hidden loop-panel">
+                    <span>Loop back to Step:</span> <select class="loop-select" style="flex-grow:1;"><option value="">(None)</option></select>
+                </div>
+            `;
+
+            div.querySelector('.step-input').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const currentIdx = Array.from(div.parentNode.children).indexOf(div);
+                    this.addEditorItem(currentIdx);
+                }
+            });
+
+            if (item.url) div.querySelector('.link-panel').classList.remove('hidden');
+            if (item.loopTarget !== null) {
+                div.querySelector('.loop-panel').classList.remove('hidden');
+                div.dataset.tempLoopTarget = item.loopTarget; 
+            }
+            return div;
+        },
+
+        toggleExtra: function(btn, type) {
+            const item = btn.closest('.editor-item');
+            item.querySelector(`.${type}-panel`).classList.toggle('hidden');
+            btn.classList.toggle('active');
+            if (type === 'loop') this.updateLoopDropdowns();
+        },
+
+        updateLoopDropdowns: function() {
+            const items = Array.from(document.querySelectorAll('.editor-item'));
+            items.forEach((itemEl, index) => {
+                const select = itemEl.querySelector('.loop-select');
+                const currentVal = select.value || itemEl.dataset.tempLoopTarget;
+                select.innerHTML = '<option value="">(None - Continue to finish)</option>';
+                for(let i=0; i < index; i++) {
+                    const prevInput = items[i].querySelector('.step-input');
+                    const text = prevInput.value.substring(0, 20) || `Step ${i+1}`;
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.text = `Step ${i+1}: ${text}...`;
+                    if (currentVal == i) opt.selected = true;
+                    select.appendChild(opt);
+                }
+            });
+        },
+
+        // --- DRAG DROP ---
+        handleDragStart: function(e) { this.dragSrcEl = e.currentTarget; e.dataTransfer.effectAllowed = 'move'; e.currentTarget.style.opacity = '0.4'; },
+        handleDragOver: function(e) { if (e.preventDefault) e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; },
+        handleDrop: function(e) {
+            e.stopPropagation();
+            const target = e.currentTarget;
+            if (this.dragSrcEl !== target) {
+                const container = target.parentNode;
+                const items = Array.from(container.children);
+                if (items.indexOf(this.dragSrcEl) < items.indexOf(target)) target.after(this.dragSrcEl);
+                else target.before(this.dragSrcEl);
+                this.updateLoopDropdowns();
+            }
+            return false;
+        },
+        handleDragEnd: function(e) { e.currentTarget.style.opacity = '1'; },
+
+        // --- SAVE TO FIREBASE ---
+        saveChecklist: async function() {
+            if (!currentUser) return;
+            const title = document.getElementById('edit-title').value;
+            if (!title.trim()) return alert("Please name your checklist");
+
+            const items = [];
+            document.querySelectorAll('.editor-item').forEach(el => {
+                const text = el.querySelector('.step-input').value.trim();
+                const url = el.querySelector('.url-input').value.trim();
+                const loopVal = el.querySelector('.loop-select').value;
+                if (text) {
+                    items.push({ 
+                        text, url, 
+                        loopTarget: loopVal !== "" ? parseInt(loopVal) : null, 
+                        checked: false 
+                    });
+                }
+            });
+
+            if (items.length === 0) return alert("Add at least one step");
+
+            const id = this.activeId || Date.now().toString();
+            // Preserve stats if editing
+            const existingStats = this.activeId ? (this.data.find(l=>l.id===id)?.stats || {}) : { runCount: 0 };
+            
+            const docData = { title, items, stats: existingStats };
+            
+            // Write to Firestore
+            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id);
+            await setDoc(ref, docData);
+
+            this.showDashboard();
+        },
+
+        deleteChecklist: async function() {
+            if (!this.activeId || !currentUser) return this.showDashboard();
+            if (confirm("Delete this checklist?")) {
+                const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
+                await deleteDoc(ref);
+                this.showDashboard();
+            }
+        },
+
+        // --- RUNNER (Writes to Firebase for Sync) ---
+        run: function(id) {
+            const list = this.data.find(l => l.id === id);
+            this.activeId = id;
+            
+            const updatedItems = list.items.map(i => ({...i, checked: false}));
+            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id);
+            updateDoc(ref, { items: updatedItems }); 
+            
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('runner-view').classList.remove('hidden');
+            document.getElementById('runner-title').innerText = list.title;
+            document.getElementById('btn-complete').classList.add('hidden');
+            document.getElementById('btn-abort').classList.remove('hidden');
+            document.getElementById('runner-stats-display').classList.add('hidden');
+            
+            this.startTimer();
+        },
+
+        renderRunnerList: function(list) {
+            const container = document.getElementById('runner-list');
+            container.innerHTML = '';
+            
+            const activeIndex = list.items.findIndex(i => !i.checked);
+
+            list.items.forEach((item, index) => {
+                const li = document.createElement('li');
+                let className = 'focus-item';
+                if (item.checked) className += ' completed';
+                else if (activeIndex === -1) className += ' completed';
+                else if (index === activeIndex) className += ' active';
+                else if (index === activeIndex + 1) className += ' next-up';
+                else className += ' upcoming';
+
+                li.className = className;
+                li.id = `runner-item-${index}`;
+                li.innerHTML = `
+                    <div class="focus-row-main" onclick="window.app.handleItemClick(${index})">
+                        <div class="checkbox-circle">${item.checked ? '✓' : ''}</div>
+                        <span class="focus-text" style="flex-grow:1;">${item.text}</span>
+                        ${item.url ? `<a href="${item.url}" target="_blank" class="runner-link-btn" onclick="event.stopPropagation()">🔗 Open Link</a>` : ''}
+                    </div>
+                `;
+                container.appendChild(li);
+            });
+
+            if (activeIndex !== -1) {
+                setTimeout(() => {
+                    const el = document.getElementById(`runner-item-${activeIndex}`);
+                    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            } else if (list.items.length > 0) {
+                this.readyToComplete();
+            }
+        },
+
+        handleItemClick: function(index) {
+            const list = this.data.find(l => l.id === this.activeId);
+            const item = list.items[index];
+            if (!item.checked && item.loopTarget !== null && item.loopTarget !== undefined) {
+                this.showLoopDecision(index, item.loopTarget);
+            } else {
+                this.toggleCheck(index);
+            }
+        },
+
+        showLoopDecision: function(index, targetIndex) {
+            const li = document.getElementById(`runner-item-${index}`);
+            if (li.querySelector('.loop-decision')) return;
+            const div = document.createElement('div');
+            div.className = 'loop-decision';
+            div.innerHTML = `
+                <span>🔁 <strong>Loop?</strong> Go to Step ${targetIndex + 1}?</span>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-primary" onclick="event.stopPropagation(); window.app.executeLoop(${index}, ${targetIndex})">Yes</button>
+                    <button class="btn-secondary" onclick="event.stopPropagation(); window.app.toggleCheck(${index})">No</button>
+                </div>
+            `;
+            li.appendChild(div);
+        },
+
+        // UPDATE FIRESTORE ON CHECK
+        toggleCheck: function(index) {
+            if (!currentUser || !this.activeId) return;
+            const list = this.data.find(l => l.id === this.activeId);
+            const updatedItems = [...list.items];
+            updatedItems[index].checked = !updatedItems[index].checked;
+            
+            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
+            updateDoc(ref, { items: updatedItems });
+        },
+
+        executeLoop: function(currentIndex, targetIndex) {
+            if (!currentUser || !this.activeId) return;
+            const list = this.data.find(l => l.id === this.activeId);
+            const updatedItems = [...list.items];
+            
+            for (let i = targetIndex; i <= currentIndex; i++) {
+                updatedItems[i].checked = false;
+            }
+            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
+            updateDoc(ref, { items: updatedItems });
+        },
+
+        startTimer: function() {
+            this.startTime = Date.now();
+            const timerEl = document.getElementById('runner-timer');
+            if (!timerEl) return;
+            timerEl.innerText = "00:00";
+            this.stopTimer();
+            this.timerInterval = setInterval(() => {
+                const diff = Math.floor((Date.now() - this.startTime) / 1000);
+                const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                timerEl.innerText = `${m}:${s}`;
+            }, 1000);
+        },
+
+        stopTimer: function() { if (this.timerInterval) clearInterval(this.timerInterval); },
+
+        readyToComplete: function() {
+            this.stopTimer();
+            document.getElementById('btn-complete').classList.remove('hidden');
+            document.getElementById('btn-abort').classList.add('hidden');
+            const timerEl = document.getElementById('runner-timer');
+            if (timerEl) document.getElementById('final-time').innerText = timerEl.innerText;
+            document.getElementById('runner-stats-display').classList.remove('hidden');
+        },
+
+        finishRun: async function() {
+            if (!currentUser || !this.activeId) return;
+            const list = this.data.find(l => l.id === this.activeId);
+            const duration = document.getElementById('runner-timer').innerText;
+            
+            const newStats = {
+                runCount: (list.stats?.runCount || 0) + 1,
+                lastDuration: duration
+            };
+            const resetItems = list.items.map(i => ({...i, checked: false}));
+
+            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
+            await updateDoc(ref, { items: resetItems, stats: newStats });
+            
+            this.showDashboard();
+        }
+    };
+
+    // Initialize
+    window.app.init();
+</script>
+</body>
+</html>
