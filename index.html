@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CheckFlow</title>
-    <!-- Favicon: Light Pink Square with Tick -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23FFB6C1%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <!-- Favicon: Xero Pink Square with Tick -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ea475f%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
     <!-- Font: Varela Round -->
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
@@ -400,16 +400,8 @@
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-    // --- YOUR FIREBASE CONFIG ---
-    const firebaseConfig = {
-  apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
-  authDomain: "checklistflow-f9fe5.firebaseapp.com",
-  projectId: "checklistflow-f9fe5",
-  storageBucket: "checklistflow-f9fe5.firebasestorage.app",
-  messagingSenderId: "630257615694",
-  appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
-    };
-
+    // Internal Test Keys
+    const firebaseConfig = JSON.parse(__firebase_config);
     const fbApp = initializeApp(firebaseConfig);
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
