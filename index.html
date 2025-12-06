@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CheckFlow</title>
-    <!-- Favicon: Xero Pink Square with Tick -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ea475f%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <!-- Favicon: Light Pink Square with Tick -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23FFB6C1%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
     <!-- Font: Varela Round -->
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* --- CHECKFLOW (XERO INSPIRED) DESIGN SYSTEM --- */
+        /* --- CHECKFLOW DESIGN SYSTEM --- */
         :root {
             --navy: #0B3C5D;          /* Core Dark */
             --blue: #13B5EA;          /* Core Blue */
@@ -48,7 +48,7 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            position: relative; /* For Toast positioning */
+            position: relative;
         }
 
         .hidden { display: none !important; }
@@ -94,7 +94,7 @@
         .btn-icon:hover { color: var(--navy); background: #eee; }
         .btn-icon.active { color: var(--blue); background: #e6f7ff; }
 
-        /* Floating Action Button for New Checklist */
+        /* Floating Action Button */
         .btn-fab {
             width: 50px; height: 50px;
             border-radius: 50%;
@@ -111,11 +111,12 @@
 
         header { 
             display: flex; 
-            flex-direction: column; /* Centered Stack */
+            flex-direction: column; 
             align-items: center; 
             justify-content: center;
             margin-bottom: 20px; padding-bottom: 10px;
             gap: 5px;
+            position: relative;
         }
         
         h1 { color: var(--navy); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin: 0; }
@@ -127,6 +128,27 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        .code-display {
+            position: absolute; right: 0; top: 5px; 
+            font-size: 0.75rem; color: #bbb; cursor: pointer;
+        }
+        .code-display:hover { color: var(--blue); text-decoration: underline; }
+
+        /* --- SYNC CODE VIEW --- */
+        #code-view {
+            max-width: 400px; margin: auto; text-align: center; 
+            background: white; padding: 40px; border-radius: var(--radius); 
+            box-shadow: var(--shadow);
+        }
+        #code-view h2 { margin-bottom: 10px; color: var(--navy); }
+        .code-input { 
+            width: 100%; padding: 12px; 
+            border: 1px solid var(--border); border-radius: var(--radius); 
+            margin-bottom: 15px; font-size: 1.2rem; text-align: center; letter-spacing: 1px; 
+            font-family: var(--font-stack); color: var(--navy);
+        }
+        .code-input:focus { border-color: var(--blue); outline: none; }
 
         /* --- DASHBOARD --- */
         #dashboard-view .checklist-grid { display: grid; gap: 12px; }
@@ -156,7 +178,7 @@
             cursor: pointer;
             transition: all 0.2s;
             flex-shrink: 0;
-            font-size: 14px; /* Icon size */
+            font-size: 14px;
         }
         .card-start-btn:hover { background: var(--green); color: white; transform: scale(1.1); }
 
@@ -172,166 +194,99 @@
         .action-btn:hover { background: #f5f5f5; color: var(--navy); }
         .action-btn.delete:hover { color: var(--pink); background: #fff0f2; }
 
-        /* --- TOAST NOTIFICATION --- */
+        /* --- TOAST --- */
         #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000;
-            font-size: 0.9rem;
-            animation: slideUp 0.3s ease-out;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 12px 24px; border-radius: 50px;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000; font-size: 0.9rem; animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        
-        #toast button {
-            background: transparent;
-            color: var(--blue);
-            padding: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
+        #toast button { background: transparent; color: var(--blue); padding: 0; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; }
         #toast button:hover { text-decoration: underline; color: #fff; }
 
         /* --- EDITOR --- */
         #editor-view { 
-            background: var(--bg-card); 
-            padding: 30px; 
-            border-radius: var(--radius); 
-            box-shadow: var(--shadow); 
-            flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
+            background: var(--bg-card); padding: 30px; border-radius: var(--radius); 
+            box-shadow: var(--shadow); flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
         }
-        
         #edit-title {
             width: 100%; border: none; font-size: 1.5rem; font-weight: 700; color: var(--navy);
             padding: 10px 0; outline: none; background: transparent;
-            border-bottom: 2px solid transparent; margin-bottom: 10px;
-            font-family: var(--font-stack);
+            border-bottom: 2px solid transparent; margin-bottom: 10px; font-family: var(--font-stack);
         }
         #edit-title:focus { border-bottom-color: var(--blue); }
-        #edit-title::placeholder { color: #ddd; }
-
-        .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         
+        .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         .editor-item { 
             display: flex; align-items: center; gap: 10px; padding: 8px 0; 
-            border-bottom: 1px solid #f8f8f8;
-            transition: opacity 0.2s;
+            border-bottom: 1px solid #f8f8f8; transition: opacity 0.2s;
         }
-        
         .editor-item .editor-tools { opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; gap: 2px; }
         .editor-item:hover .editor-tools { opacity: 1; pointer-events: auto; }
-        
         .drag-handle { color: #ddd; cursor: grab; font-size: 1.2rem; opacity: 0; transition: 0.2s; padding: 0 5px; }
         .editor-item:hover .drag-handle { opacity: 1; }
-        
-        .editor-item input.step-input { 
-            flex-grow: 1; border: none; font-size: 1rem; color: var(--navy); outline: none; 
-            font-family: var(--font-stack);
-        }
-        .editor-item input.step-input::placeholder { color: #eee; }
-
+        .editor-item input.step-input { flex-grow: 1; border: none; font-size: 1rem; color: var(--navy); outline: none; font-family: var(--font-stack); }
         .editor-extra-panel { 
-            padding: 8px 10px 8px 45px; 
-            background: #F9FAFB; border-radius: 6px;
+            padding: 8px 10px 8px 45px; background: #F9FAFB; border-radius: 6px;
             font-size: 0.85rem; display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
         }
         .editor-extra-panel input, .editor-extra-panel select { padding: 4px; border: 1px solid #e0e0e0; border-radius: 4px; }
 
         /* --- RUNNER --- */
         #runner-view { display: flex; flex-direction: column; height: 100%; position: relative; }
-        
         .runner-header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 20px 0; border-bottom: 1px solid var(--border);
             background: var(--bg-body); z-index: 20;
         }
         .runner-title-text { font-size: 1.1rem; font-weight: 700; color: var(--navy); }
+        .timer { font-family: monospace; font-size: 0.9rem; color: var(--blue); background: rgba(19, 181, 234, 0.1); padding: 4px 8px; border-radius: 4px; }
         
-        .timer { 
-            font-family: monospace; font-size: 0.9rem; color: var(--blue); 
-            background: rgba(19, 181, 234, 0.1); padding: 4px 8px; border-radius: 4px; 
-        }
-        
-        /* Smart Watch Scroll List */
         .focus-list { 
-            list-style: none; 
-            padding: 45vh 30px; 
-            flex-grow: 1; overflow-y: auto; 
-            position: relative; margin: 0; scroll-behavior: smooth;
-            scrollbar-width: none;
+            list-style: none; padding: 45vh 30px; flex-grow: 1; overflow-y: auto; 
+            position: relative; margin: 0; scroll-behavior: smooth; scrollbar-width: none;
         }
         .focus-list::-webkit-scrollbar { display: none; }
 
         .focus-item { 
-            padding: 14px 16px; 
-            margin-bottom: 8px; 
-            border-radius: 12px; 
-            background: transparent; 
+            padding: 14px 16px; margin-bottom: 8px; border-radius: 12px; background: transparent; 
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex; flex-direction: column; gap: 10px; 
-            cursor: pointer; border: 1px solid transparent; 
-            transform-origin: center center;
+            cursor: pointer; border: 1px solid transparent; transform-origin: center center;
         }
-        
         .focus-row-main { display: flex; align-items: center; gap: 12px; width: 100%; }
-
-        .focus-item.active { 
-            background: #fff; transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(11, 60, 93, 0.12);
-            border: 1px solid var(--blue);
-            opacity: 1; z-index: 10;
-        }
         
+        .focus-item.active { 
+            background: #fff; transform: scale(1.05); box-shadow: 0 8px 20px rgba(11, 60, 93, 0.12);
+            border: 1px solid var(--blue); opacity: 1; z-index: 10;
+        }
         .focus-item:not(.active) { transform: scale(0.95); opacity: 0.4; filter: grayscale(100%); }
-
         .focus-item.completed .focus-text { text-decoration: line-through; color: #aaa; }
         
         .checkbox-square { 
-            width: 20px; height: 20px; 
-            border: 2px solid #ccc; border-radius: 6px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: white; flex-shrink: 0; transition: all 0.2s; 
-            font-size: 14px; margin-top: 1px;
+            width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 6px; 
+            display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; 
+            transition: all 0.2s; font-size: 14px; margin-top: 1px;
         }
-        
         .focus-item.active .checkbox-square { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(19, 181, 234, 0.1); }
         .focus-item.completed .checkbox-square { background: var(--blue); border-color: var(--blue); }
-        
         .focus-text { font-size: 1rem; line-height: 1.4; color: var(--navy); font-weight: 500; }
         
-        /* 4. Inline Loop Buttons - UPDATED: Wider and Easier to Click */
-        .loop-inline-actions {
-            display: flex; gap: 8px; margin-left: auto;
-        }
+        .loop-inline-actions { display: flex; gap: 8px; margin-left: auto; }
         .btn-loop-inline {
-            background: #fff; border: 1px solid #ddd; color: var(--navy);
-            padding: 8px 16px; /* Wider padding */
-            min-width: 44px;   /* Minimum clickable width */
-            border-radius: 6px; 
-            font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
+            background: #fff; border: 1px solid #ddd; color: var(--navy); padding: 8px 16px; 
+            min-width: 44px; border-radius: 6px; font-size: 14px; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer;
         }
         .btn-loop-inline:hover { border-color: var(--blue); color: var(--blue); background: #f0faff; }
         .btn-loop-inline.primary { background: var(--blue); color: white; border-color: var(--blue); }
         .btn-loop-inline.primary:hover { background: #0e8cb5; }
 
-        /* Updated Link Button for Runner - Wider */
         .runner-link-btn { 
-            margin-left: auto; color: var(--blue); text-decoration: none; 
-            font-size: 0.9rem; border: 1px solid var(--blue); 
-            padding: 6px 12px; border-radius: 6px; display: flex; align-items: center; 
-            background: white; font-weight: 600;
+            margin-left: auto; color: var(--blue); text-decoration: none; font-size: 0.9rem; 
+            border: 1px solid var(--blue); padding: 6px 12px; border-radius: 6px; 
+            display: flex; align-items: center; background: white; font-weight: 600;
         }
         .runner-link-btn:hover { background: #e6f7ff; }
 
@@ -348,10 +303,19 @@
     <header>
         <h1>CheckFlow</h1>
         <div id="sync-status" class="sync-badge">Connecting...</div>
+        <div id="code-display" class="code-display hidden" onclick="window.app.clearCode()">Code: <span id="current-code"></span> (Switch)</div>
     </header>
 
+    <!-- SETUP VIEW (Enter Shared Code) -->
+    <div id="code-view" class="hidden">
+        <h2>Sync Setup</h2>
+        <p style="color:#666; margin-bottom:20px;">Enter a shared <strong>Secret Code</strong> to sync your checklists across devices.</p>
+        <input type="text" id="access-code" class="code-input" placeholder="e.g. 'john-list'">
+        <button class="btn-primary" style="width:100%; padding:12px;" onclick="window.app.setAccessCode()">Start Syncing</button>
+    </div>
+
     <!-- DASHBOARD -->
-    <div id="dashboard-view">
+    <div id="dashboard-view" class="hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
             <h2 style="font-size: 1rem; color: #999; text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">My Lists</h2>
             <button class="btn-fab" onclick="window.app.createNew()">+</button>
@@ -397,17 +361,27 @@
 <!-- FIREBASE MODULE -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-    // Internal Test Keys
-    const firebaseConfig = JSON.parse(__firebase_config);
+    // --- YOUR FIREBASE CONFIG ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
+        authDomain: "checklistflow-f9fe5.firebaseapp.com",
+        projectId: "checklistflow-f9fe5",
+        storageBucket: "checklistflow-f9fe5.firebasestorage.app",
+        messagingSenderId: "630257615694",
+        appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
+    };
+
     const fbApp = initializeApp(firebaseConfig);
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-id';
+    const appId = 'checkflow-app-v1'; // Standard ID for your app
     
     let currentUser = null;
+    let accessCode = localStorage.getItem('checkflow_access_code') || null;
+    let unsubscribeSnapshot = null;
 
     window.app = {
         data: [], 
@@ -415,43 +389,69 @@
         timerInterval: null,
         startTime: null,
         dragSrcEl: null,
-        // Variables for Undo
         deletedItem: null,
         deleteTimeout: null,
 
         init: async function() {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
+            // Sign in anonymously first
+            try {
                 await signInAnonymously(auth);
+            } catch (e) {
+                console.error("Auth failed:", e);
+                document.getElementById('sync-status').innerText = "Auth Error";
             }
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     currentUser = user;
-                    this.updateSyncStatus();
-                    this.setupRealtimeListener();
+                    this.checkAccessCode();
                 } else {
                     document.getElementById('sync-status').innerText = "OFFLINE";
                 }
             });
         },
 
-        updateSyncStatus: function() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            document.getElementById('sync-status').innerText = `Last synced: ${timeStr}, ${dateStr}`;
+        checkAccessCode: function() {
+            if (!accessCode) {
+                document.getElementById('sync-status').innerText = "Wait for Setup";
+                document.getElementById('code-view').classList.remove('hidden');
+                document.getElementById('dashboard-view').classList.add('hidden');
+            } else {
+                document.getElementById('sync-status').innerText = "☁️ Synced";
+                document.getElementById('code-view').classList.add('hidden');
+                document.getElementById('current-code').innerText = accessCode;
+                document.getElementById('code-display').classList.remove('hidden');
+                this.setupRealtimeListener();
+            }
+        },
+
+        setAccessCode: function() {
+            const code = document.getElementById('access-code').value.trim();
+            if (code.length < 3) return alert("Code must be at least 3 characters.");
+            accessCode = code;
+            localStorage.setItem('checkflow_access_code', code);
+            this.checkAccessCode();
+        },
+
+        clearCode: function() {
+            if(confirm("Switch to a different sync code?")) {
+                localStorage.removeItem('checkflow_access_code');
+                accessCode = null;
+                if(unsubscribeSnapshot) unsubscribeSnapshot();
+                location.reload();
+            }
         },
 
         setupRealtimeListener: function() {
-            if (!currentUser) return;
-            const q = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists');
-            onSnapshot(q, (snapshot) => {
+            if (!currentUser || !accessCode) return;
+            
+            // USE ACCESS CODE as the identifier instead of uid
+            const q = collection(db, 'artifacts', appId, 'users', accessCode, 'checklists');
+            
+            unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
                 const newData = [];
                 snapshot.forEach((doc) => newData.push({ ...doc.data(), id: doc.id }));
                 
-                // If we have a pending delete item, exclude it from display even if it exists in DB still
                 if (this.deletedItem) {
                     this.data = newData.filter(item => item.id !== this.deletedItem.id);
                 } else {
@@ -459,7 +459,6 @@
                 }
                 
                 this.data.sort((a, b) => (b.stats?.runCount || 0) - (a.stats?.runCount || 0));
-                this.updateSyncStatus();
                 
                 if (this.activeId && !document.getElementById('runner-view').classList.contains('hidden')) {
                     const activeList = this.data.find(l => l.id === this.activeId);
@@ -467,6 +466,9 @@
                 } else if (!this.activeId && !document.getElementById('dashboard-view').classList.contains('hidden')) {
                      this.showDashboard(); 
                 }
+            }, (error) => {
+                console.error("Firestore error:", error);
+                document.getElementById('sync-status').innerText = "Sync Error (Check Console)";
             });
         },
 
@@ -476,6 +478,7 @@
             document.getElementById('dashboard-view').classList.remove('hidden');
             document.getElementById('editor-view').classList.add('hidden');
             document.getElementById('runner-view').classList.add('hidden');
+            document.getElementById('code-view').classList.add('hidden');
 
             const listEl = document.getElementById('checklist-list');
             listEl.innerHTML = '';
@@ -486,7 +489,6 @@
                 const runs = list.stats?.runCount || 0;
                 const card = document.createElement('div');
                 card.className = 'checklist-card';
-                
                 card.innerHTML = `
                     <div class="card-start-btn" onclick="window.app.run('${list.id}')">
                         <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M13.5 7.13397C14.1667 7.51887 14.1667 8.48113 13.5 8.86603L1.5 15.7942C0.833334 16.1791 0 15.698 0 14.9282L0 1.0718C0 0.301997 0.833333 -0.179129 1.5 0.205771L13.5 7.13397Z"/></svg>
@@ -502,7 +504,6 @@
                         <div class="action-btn" title="Duplicate" onclick="window.app.duplicateChecklist('${list.id}')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </div>
-                        <!-- Delete Button (Fixed Logic) -->
                         <div class="action-btn delete" title="Delete" onclick="event.stopPropagation(); window.app.deleteChecklist('${list.id}')">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </div>
@@ -525,38 +526,34 @@
         },
 
         duplicateChecklist: async function(id) {
-            if(!currentUser) return;
+            if(!currentUser || !accessCode) return;
             const list = this.data.find(l => l.id === id);
             if(!list) return;
-
             const newId = Date.now().toString();
-            const newTitle = list.title + " (Copy)";
-            const newItems = list.items.map(i => ({...i}));
-            
-            const newList = { title: newTitle, items: newItems, stats: { runCount: 0 } };
-            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', newId), newList);
+            const newList = { 
+                title: list.title + " (Copy)", 
+                items: list.items.map(i => ({...i})), 
+                stats: { runCount: 0 } 
+            };
+            await setDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', newId), newList);
         },
 
-        // Updated Delete with Undo
         deleteChecklist: function(id) {
-            // 1. Find and Save Item
             const item = this.data.find(l => l.id === id);
             if (!item) return;
             this.deletedItem = item;
-
-            // 2. Optimistic Update (Remove locally immediately)
+            // Optimistic Remove
             this.data = this.data.filter(l => l.id !== id);
             this.showDashboard();
-
-            // 3. Show Toast
+            
             const toast = document.getElementById('toast');
             toast.classList.remove('hidden');
 
-            // 4. Set Timeout for permanent delete
             if (this.deleteTimeout) clearTimeout(this.deleteTimeout);
             this.deleteTimeout = setTimeout(async () => {
-                // Time up, actually delete
-                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id));
+                if(currentUser && accessCode) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', id));
+                }
                 this.deletedItem = null;
                 toast.classList.add('hidden');
             }, 5000);
@@ -564,15 +561,9 @@
 
         undoDelete: function() {
             if (!this.deletedItem) return;
-            
-            // 1. Clear timeout to prevent DB deletion
             clearTimeout(this.deleteTimeout);
-            
-            // 2. Restore data locally
             this.data.push(this.deletedItem);
             this.deletedItem = null;
-            
-            // 3. Update UI
             this.showDashboard();
             document.getElementById('toast').classList.add('hidden');
         },
@@ -583,7 +574,6 @@
             
             const titleInput = document.getElementById('edit-title');
             titleInput.value = title;
-            
             titleInput.onkeydown = (e) => {
                 if(e.key === 'Enter') {
                     e.preventDefault();
@@ -594,10 +584,8 @@
 
             const container = document.getElementById('editor-items');
             container.innerHTML = '';
-            
             if (items.length === 0) items = [{text:''}]; 
             items.forEach((item) => this.addEditorItemDOM(item)); 
-            
             this.updateLoopDropdowns(); 
         },
 
@@ -628,17 +616,14 @@
             const div = document.createElement('div');
             div.className = 'editor-item';
             div.draggable = true;
-            
             div.innerHTML = `
                 <span class="drag-handle">::</span>
                 <input type="text" class="step-input" value="${item.text || ''}" placeholder="">
-                
                 <div class="editor-tools">
                     <button class="btn-icon ${item.url ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'link')" title="Link">🔗</button>
                     <button class="btn-icon ${item.loopTarget !== null ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'loop')" title="Loop">↰</button>
                     <button class="btn-icon" onclick="this.closest('.editor-item').remove(); window.app.updateLoopDropdowns();" title="Remove" style="color:#EA475F;">×</button>
                 </div>
-                
                 <div style="width:100%; display:none;"></div>
                 <div class="editor-extra-panel hidden link-panel" style="width:100%;">
                     <span>URL:</span> <input type="text" class="url-input" value="${item.url || ''}" style="flex-grow:1;">
@@ -647,16 +632,13 @@
                     <span>Loop to:</span> <select class="loop-select" style="flex-grow:1;"><option value="">(None)</option></select>
                 </div>
             `;
-            
             div.style.flexWrap = "wrap"; 
-
             div.querySelector('.step-input').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     this.addEditorItem(Array.from(div.parentNode.children).indexOf(div));
                 }
             });
-            
             if (item.url) div.querySelector('.link-panel').classList.remove('hidden');
             if (item.loopTarget !== null) {
                 div.querySelector('.loop-panel').classList.remove('hidden');
@@ -689,7 +671,7 @@
         },
 
         saveChecklist: async function() {
-            if (!currentUser) return;
+            if (!currentUser || !accessCode) return;
             const title = document.getElementById('edit-title').value;
             if (!title.trim()) return alert("Name required");
             const items = [];
@@ -702,14 +684,16 @@
             if (items.length === 0) return alert("Add steps");
             const id = this.activeId || Date.now().toString();
             const existingStats = this.activeId ? (this.data.find(l=>l.id===id)?.stats || {}) : { runCount: 0 };
-            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { title, items, stats: existingStats });
+            
+            await setDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', id), { title, items, stats: existingStats });
             this.showDashboard();
         },
 
         run: function(id) {
+            if(!accessCode) return;
             const list = this.data.find(l => l.id === id);
             this.activeId = id;
-            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { 
+            updateDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', id), { 
                 items: list.items.map(i => ({...i, checked: false})) 
             });
             document.getElementById('dashboard-view').classList.add('hidden');
@@ -738,11 +722,8 @@
                 li.className = className;
                 li.id = `runner-item-${index}`;
                 
-                // 4. Inline Loop Buttons with Icons (Down Arrow / Loop Arrow)
                 let actionsHtml = '';
-                if(item.url) {
-                    actionsHtml += `<a href="${item.url}" target="_blank" class="runner-link-btn" onclick="event.stopPropagation()">Link ↗</a>`;
-                }
+                if(item.url) actionsHtml += `<a href="${item.url}" target="_blank" class="runner-link-btn" onclick="event.stopPropagation()">Link ↗</a>`;
                 
                 if(!item.checked && item.loopTarget !== null && index === activeIndex) {
                     actionsHtml = `
@@ -766,9 +747,7 @@
             if (activeIndex !== -1) {
                 setTimeout(() => {
                     const el = document.getElementById(`runner-item-${activeIndex}`);
-                    if(el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 50); 
             } else if (list.items.length > 0) {
                 this.readyToComplete();
@@ -779,23 +758,24 @@
             const list = this.data.find(l => l.id === this.activeId);
             const item = list.items[index];
             if (!item.checked && item.loopTarget !== null && item.loopTarget !== undefined) {
-                // Do nothing
+                // Wait for loop/continue decision
             } else {
                 this.toggleCheck(index);
             }
         },
 
         toggleCheck: function(index) {
-            if (!currentUser || !this.activeId) return;
+            if (!currentUser || !this.activeId || !accessCode) return;
             const items = [...this.data.find(l => l.id === this.activeId).items];
             items[index].checked = !items[index].checked;
-            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items });
+            updateDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', this.activeId), { items });
         },
 
         executeLoop: function(currentIndex, targetIndex) {
+            if (!accessCode) return;
             const items = [...this.data.find(l => l.id === this.activeId).items];
             for (let i = targetIndex; i <= currentIndex; i++) items[i].checked = false;
-            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items });
+            updateDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', this.activeId), { items });
         },
 
         startTimer: function() {
@@ -808,9 +788,7 @@
                 document.getElementById('runner-timer').innerText = timeStr;
                 
                 const btn = document.getElementById('btn-complete');
-                if(!btn.classList.contains('hidden')) {
-                     btn.innerText = `Done (${timeStr})`;
-                }
+                if(!btn.classList.contains('hidden')) btn.innerText = `Done (${timeStr})`;
             }, 1000);
         },
         stopTimer: function() { clearInterval(this.timerInterval); },
@@ -822,9 +800,10 @@
             document.getElementById('btn-complete').innerText = `Done (${finalTime})`;
         },
         finishRun: async function() {
+            if(!accessCode) return;
             const list = this.data.find(l => l.id === this.activeId);
             const stats = { runCount: (list.stats?.runCount || 0) + 1, lastDuration: document.getElementById('runner-timer').innerText };
-            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { 
+            await updateDoc(doc(db, 'artifacts', appId, 'users', accessCode, 'checklists', this.activeId), { 
                 items: list.items.map(i => ({...i, checked: false})), stats 
             });
             this.showDashboard();
