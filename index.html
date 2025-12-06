@@ -421,6 +421,12 @@
                 document.getElementById('code-view').classList.add('hidden');
                 document.getElementById('current-code').innerText = accessCode;
                 document.getElementById('code-display').classList.remove('hidden');
+                
+                // --- FIX FOR BLANK SCREEN ---
+                // We must explicitly show the dashboard layout here, 
+                // even if it's empty, so the "+" button appears.
+                this.showDashboard(); 
+                
                 this.setupRealtimeListener();
             }
         },
@@ -463,7 +469,8 @@
                 if (this.activeId && !document.getElementById('runner-view').classList.contains('hidden')) {
                     const activeList = this.data.find(l => l.id === this.activeId);
                     if (activeList) this.renderRunnerList(activeList);
-                } else if (!this.activeId && !document.getElementById('dashboard-view').classList.contains('hidden')) {
+                } else if (!this.activeId) {
+                     // Always refresh dashboard if not in runner mode
                      this.showDashboard(); 
                 }
             }, (error) => {
@@ -482,7 +489,11 @@
 
             const listEl = document.getElementById('checklist-list');
             listEl.innerHTML = '';
-            if (this.data.length === 0) return document.getElementById('empty-state').classList.remove('hidden');
+            
+            if (this.data.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+                return;
+            }
             document.getElementById('empty-state').classList.add('hidden');
 
             this.data.forEach(list => {
