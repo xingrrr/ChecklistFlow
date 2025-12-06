@@ -393,7 +393,15 @@
         </div>
     </div>
 </div>
-
+/* REPLACE THE TEST CONFIG LINE WITH THIS BLOCK */
+const firebaseConfig = {
+    apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
+  authDomain: "checklistflow-f9fe5.firebaseapp.com",
+  projectId: "checklistflow-f9fe5",
+  storageBucket: "checklistflow-f9fe5.firebasestorage.app",
+  messagingSenderId: "630257615694",
+  appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
+};
 <!-- FIREBASE MODULE -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
@@ -401,7 +409,7 @@
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     // Internal Test Keys
-    const firebaseConfig = JSON.parse(__firebase_config);
+
     const fbApp = initializeApp(firebaseConfig);
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
