@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow | Sync</title>
+    <title>CheckFlow</title>
+    <!-- Favicon: Light Pink Square with Tick -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23FFB6C1%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <!-- Font: Varela Round -->
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* --- XERO-INSPIRED DESIGN SYSTEM --- */
+        /* --- CHECKFLOW (XERO INSPIRED) DESIGN SYSTEM --- */
         :root {
-            --primary: #13B5EA;
-            --primary-dark: #0e8cb5;
-            --navy: #0B3C5D;
-            --text-main: #27333B;
-            --text-light: #677581;
-            --bg-body: #F4F5F6;
+            --navy: #0B3C5D;          /* Core Dark */
+            --blue: #13B5EA;          /* Core Blue */
+            --pink: #EA475F;          /* Core Pink */
+            --green: #42C2A6;         /* Success/Play */
+            --bg-body: #F4F5F6;       /* Light Grey Bg */
             --bg-card: #FFFFFF;
             --border: #E0E0E0;
-            --success: #33b679;
-            --radius: 6px;
-            --shadow: 0 2px 8px rgba(0,0,0,0.06);
-            --font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            
+            --radius: 8px;            
+            --radius-sm: 4px;
+            --shadow: 0 2px 6px rgba(11, 60, 93, 0.08);
+            --font-stack: 'Varela Round', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         * { box-sizing: border-box; }
@@ -26,200 +30,366 @@
         body {
             font-family: var(--font-stack);
             background-color: var(--bg-body);
-            color: var(--text-main);
+            color: var(--navy);
             margin: 0;
             padding: 0;
-            line-height: 1.5;
+            line-height: 1.4;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
             width: 100%;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            position: relative; /* For Toast positioning */
         }
 
         .hidden { display: none !important; }
         
+        /* --- BUTTONS & ICONS --- */
         button {
             cursor: pointer;
             border: none;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-family: var(--font-stack);
+        }
+
+        .btn-primary { 
+            background: var(--blue); 
+            color: white; 
+            border-radius: var(--radius);
+            padding: 10px 20px;
             font-size: 14px;
+        }
+        .btn-primary:hover { background: #0e8cb5; transform: translateY(-1px); }
+        
+        .btn-secondary { 
+            background: white; 
+            color: var(--navy); 
+            border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 8px 16px;
-            transition: all 0.2s ease;
-            font-weight: 500;
         }
+        .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
 
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
-        .btn-secondary:hover { background: #f0faff; }
-        .btn-text { background: transparent; color: var(--text-light); padding: 4px 8px; }
-        .btn-text:hover { color: var(--navy); text-decoration: underline; }
+        .btn-text { background: transparent; color: #999; padding: 6px; font-size: 0.9rem; }
+        .btn-text:hover { color: var(--navy); background: rgba(0,0,0,0.05); border-radius: var(--radius-sm); }
 
-        /* Icon Buttons */
         .btn-icon { 
-            padding: 6px; background: transparent; color: #aaa; border-radius: 4px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+            padding: 6px; 
+            background: transparent; 
+            color: #ccc; 
+            border-radius: 4px; 
+            font-size: 1.1rem; 
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-icon:hover { background: #f0f0f0; color: var(--navy); }
-        .btn-icon.active { color: var(--primary); background: #e6f7ff; }
+        .btn-icon:hover { color: var(--navy); background: #eee; }
+        .btn-icon.active { color: var(--blue); background: #e6f7ff; }
 
-        header { text-align: center; margin-bottom: 20px; position: relative;}
-        h1, h2 { color: var(--navy); margin-top: 0; }
-        h1 { font-size: 1.5rem; letter-spacing: -0.5px; }
+        /* Floating Action Button for New Checklist */
+        .btn-fab {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: white;
+            font-size: 28px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(19, 181, 234, 0.3);
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .btn-fab:hover { transform: scale(1.05); background: #0e8cb5; }
 
-        .sync-badge {
-            font-size: 0.75rem; background: #e6f7ff; color: var(--primary); padding: 4px 8px; border-radius: 12px; display: inline-block; margin-top: 5px;
+        header { 
+            display: flex; 
+            flex-direction: column; /* Centered Stack */
+            align-items: center; 
+            justify-content: center;
+            margin-bottom: 20px; padding-bottom: 10px;
+            gap: 5px;
         }
         
-        /* Logout Button */
-        .logout-link {
-            position: absolute; right: 0; top: 0; font-size: 0.8rem; color: var(--text-light); text-decoration: none; cursor: pointer;
+        h1 { color: var(--navy); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin: 0; }
+        
+        .sync-badge {
+            font-size: 10px; font-weight: 600;
+            background: #e6f7ff; color: var(--blue); 
+            padding: 4px 10px; border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .logout-link:hover { text-decoration: underline; color: var(--navy); }
-
-        /* --- LOGIN VIEW --- */
-        #login-view {
-            max-width: 400px; margin: auto; text-align: center; background: white; padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow);
-        }
-        #login-view h2 { margin-bottom: 20px; }
-        .login-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; font-size: 1rem; }
-        .login-input:focus { border-color: var(--primary); outline: none; }
-        .auth-error { color: #d9534f; font-size: 0.9rem; margin-bottom: 15px; display: none; }
 
         /* --- DASHBOARD --- */
-        #dashboard-view .checklist-grid { display: grid; gap: 15px; }
+        #dashboard-view .checklist-grid { display: grid; gap: 12px; }
+        
         .checklist-card {
-            background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 4px solid var(--primary); transition: transform 0.2s; display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); 
+            padding: 12px 16px; 
+            border-radius: var(--radius); 
+            border: 1px solid transparent;
+            box-shadow: var(--shadow);
+            transition: all 0.2s; 
+            display: flex; 
+            align-items: center;
+            gap: 15px;
         }
-        .checklist-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; font-weight: 600; }
-        .card-stats { font-size: 0.8rem; color: var(--text-light); }
-        .card-actions { display: flex; gap: 10px; }
+        .checklist-card:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(11, 60, 93, 0.12);
+        }
+
+        .card-start-btn {
+            width: 36px; height: 36px;
+            background: rgba(66, 194, 166, 0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--green);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-size: 14px; /* Icon size */
+        }
+        .card-start-btn:hover { background: var(--green); color: white; transform: scale(1.1); }
+
+        .card-content { flex-grow: 1; }
+        .card-content h3 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--navy); }
+        .card-content .card-stats { font-size: 0.75rem; color: #999; margin-top: 2px; }
+
+        .card-actions { display: flex; gap: 5px; }
+        .action-btn { 
+            color: #bbb; padding: 6px; cursor: pointer; border-radius: 4px; transition: 0.2s; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .action-btn:hover { background: #f5f5f5; color: var(--navy); }
+        .action-btn.delete:hover { color: var(--pink); background: #fff0f2; }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 0.9rem;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        
+        #toast button {
+            background: transparent;
+            color: var(--blue);
+            padding: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        #toast button:hover { text-decoration: underline; color: #fff; }
 
         /* --- EDITOR --- */
-        #editor-view { background: var(--bg-card); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px; font-weight: 600; }
-        input[type="text"] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text-main); }
-        input[type="text"]:focus { outline: 2px solid var(--primary); border-color: transparent; }
+        #editor-view { 
+            background: var(--bg-card); 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow); 
+            flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
+        }
+        
+        #edit-title {
+            width: 100%; border: none; font-size: 1.5rem; font-weight: 700; color: var(--navy);
+            padding: 10px 0; outline: none; background: transparent;
+            border-bottom: 2px solid transparent; margin-bottom: 10px;
+            font-family: var(--font-stack);
+        }
+        #edit-title:focus { border-bottom-color: var(--blue); }
+        #edit-title::placeholder { color: #ddd; }
 
         .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
-        .editor-item { background: #fff; border: 1px solid var(--border); border-radius: 4px; margin-bottom: 8px; transition: box-shadow 0.2s; }
-        .editor-main-row { display: flex; align-items: center; padding: 8px; gap: 8px; }
-        .drag-handle { color: #ccc; cursor: grab; font-size: 1.2rem; padding: 0 5px; user-select: none; }
-        .editor-item input.step-input { flex-grow: 1; border: none; padding: 5px; font-size: 1rem; }
-        .editor-item input.step-input:focus { outline: none; }
+        
+        .editor-item { 
+            display: flex; align-items: center; gap: 10px; padding: 8px 0; 
+            border-bottom: 1px solid #f8f8f8;
+            transition: opacity 0.2s;
+        }
+        
+        .editor-item .editor-tools { opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; gap: 2px; }
+        .editor-item:hover .editor-tools { opacity: 1; pointer-events: auto; }
+        
+        .drag-handle { color: #ddd; cursor: grab; font-size: 1.2rem; opacity: 0; transition: 0.2s; padding: 0 5px; }
+        .editor-item:hover .drag-handle { opacity: 1; }
+        
+        .editor-item input.step-input { 
+            flex-grow: 1; border: none; font-size: 1rem; color: var(--navy); outline: none; 
+            font-family: var(--font-stack);
+        }
+        .editor-item input.step-input::placeholder { color: #eee; }
 
-        .editor-extra-panel { padding: 8px 10px 8px 45px; background: #f9f9f9; border-top: 1px solid #eee; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
-        .editor-extra-panel input { padding: 5px; font-size: 0.9rem; }
-        .editor-extra-panel select { padding: 5px; border-radius: 4px; border: 1px solid #ddd; }
+        .editor-extra-panel { 
+            padding: 8px 10px 8px 45px; 
+            background: #F9FAFB; border-radius: 6px;
+            font-size: 0.85rem; display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+        }
+        .editor-extra-panel input, .editor-extra-panel select { padding: 4px; border: 1px solid #e0e0e0; border-radius: 4px; }
 
         /* --- RUNNER --- */
-        #runner-view { display: flex; flex-direction: column; height: 100%; max-height: 100vh; }
-        .runner-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .timer { font-family: 'Courier New', monospace; font-size: 1.5rem; color: var(--navy); font-weight: bold; background: #e6f7ff; padding: 4px 12px; border-radius: 4px; }
+        #runner-view { display: flex; flex-direction: column; height: 100%; position: relative; }
         
-        .focus-list { list-style: none; padding: 0; flex-grow: 1; overflow-y: auto; position: relative; margin: 0; padding-right: 5px; }
-        .focus-item { padding: 18px; margin-bottom: 15px; border-radius: var(--radius); background: white; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; gap: 10px; cursor: pointer; border: 1px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .focus-row-main { display: flex; align-items: center; gap: 15px; width: 100%; }
-
-        .focus-item.active { transform: scale(1.02); box-shadow: 0 8px 20px rgba(19, 181, 234, 0.15); border-color: var(--primary); opacity: 1; z-index: 10; }
-        .focus-item.completed { opacity: 0.4; transform: scale(0.98); background: #f9f9f9; }
-        .focus-item.completed .focus-text { text-decoration: line-through; color: var(--text-light); }
-        .focus-item.upcoming { opacity: 0.3; filter: blur(1px); transform: scale(0.98); pointer-events: none; }
-        .focus-item.next-up { opacity: 0.7; filter: blur(0); transform: scale(1); pointer-events: none; }
-
-        .checkbox-circle { width: 26px; height: 26px; border: 2px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; transition: all 0.2s; font-size: 16px; }
-        .focus-item.active .checkbox-circle { border-color: var(--primary); }
-        .focus-item.completed .checkbox-circle { background: var(--success); border-color: var(--success); }
+        .runner-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 0; border-bottom: 1px solid var(--border);
+            background: var(--bg-body); z-index: 20;
+        }
+        .runner-title-text { font-size: 1.1rem; font-weight: 700; color: var(--navy); }
         
-        .runner-link-btn { margin-left: auto; color: var(--primary); text-decoration: none; font-size: 0.9rem; padding: 4px 8px; border: 1px solid var(--primary); border-radius: 4px; display: flex; align-items: center; gap: 5px; }
-        .runner-link-btn:hover { background: #f0faff; }
+        .timer { 
+            font-family: monospace; font-size: 0.9rem; color: var(--blue); 
+            background: rgba(19, 181, 234, 0.1); padding: 4px 8px; border-radius: 4px; 
+        }
+        
+        /* Smart Watch Scroll List */
+        .focus-list { 
+            list-style: none; 
+            padding: 45vh 30px; 
+            flex-grow: 1; overflow-y: auto; 
+            position: relative; margin: 0; scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+        .focus-list::-webkit-scrollbar { display: none; }
 
-        .loop-decision { background: #fff8e1; border: 1px solid #ffe082; padding: 10px; border-radius: 4px; margin-top: 5px; display: flex; align-items: center; justify-content: space-between; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .focus-item { 
+            padding: 14px 16px; 
+            margin-bottom: 8px; 
+            border-radius: 12px; 
+            background: transparent; 
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column; gap: 10px; 
+            cursor: pointer; border: 1px solid transparent; 
+            transform-origin: center center;
+        }
+        
+        .focus-row-main { display: flex; align-items: center; gap: 12px; width: 100%; }
 
-        .runner-footer { margin-top: auto; text-align: center; padding-top: 20px; border-top: 1px solid var(--border); background: var(--bg-body); }
-        .runner-stats { font-size: 1rem; color: var(--navy); background: #dff0d8; padding: 10px; border-radius: var(--radius); margin-bottom: 15px; border: 1px solid #d6e9c6; }
+        .focus-item.active { 
+            background: #fff; transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(11, 60, 93, 0.12);
+            border: 1px solid var(--blue);
+            opacity: 1; z-index: 10;
+        }
+        
+        .focus-item:not(.active) { transform: scale(0.95); opacity: 0.4; filter: grayscale(100%); }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        .focus-item.completed .focus-text { text-decoration: line-through; color: #aaa; }
+        
+        .checkbox-square { 
+            width: 20px; height: 20px; 
+            border: 2px solid #ccc; border-radius: 6px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; flex-shrink: 0; transition: all 0.2s; 
+            font-size: 14px; margin-top: 1px;
+        }
+        
+        .focus-item.active .checkbox-square { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(19, 181, 234, 0.1); }
+        .focus-item.completed .checkbox-square { background: var(--blue); border-color: var(--blue); }
+        
+        .focus-text { font-size: 1rem; line-height: 1.4; color: var(--navy); font-weight: 500; }
+        
+        /* 4. Inline Loop Buttons - UPDATED: Wider and Easier to Click */
+        .loop-inline-actions {
+            display: flex; gap: 8px; margin-left: auto;
+        }
+        .btn-loop-inline {
+            background: #fff; border: 1px solid #ddd; color: var(--navy);
+            padding: 8px 16px; /* Wider padding */
+            min-width: 44px;   /* Minimum clickable width */
+            border-radius: 6px; 
+            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .btn-loop-inline:hover { border-color: var(--blue); color: var(--blue); background: #f0faff; }
+        .btn-loop-inline.primary { background: var(--blue); color: white; border-color: var(--blue); }
+        .btn-loop-inline.primary:hover { background: #0e8cb5; }
+
+        /* Updated Link Button for Runner - Wider */
+        .runner-link-btn { 
+            margin-left: auto; color: var(--blue); text-decoration: none; 
+            font-size: 0.9rem; border: 1px solid var(--blue); 
+            padding: 6px 12px; border-radius: 6px; display: flex; align-items: center; 
+            background: white; font-weight: 600;
+        }
+        .runner-link-btn:hover { background: #e6f7ff; }
+
+        .runner-footer { 
+            margin-top: auto; text-align: center; padding: 20px; 
+            border-top: 1px solid var(--border); background: var(--bg-body); 
+            position: sticky; bottom: 0; z-index: 30;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1 id="app-title">FocusFlow</h1>
+        <h1>CheckFlow</h1>
         <div id="sync-status" class="sync-badge">Connecting...</div>
-        <a onclick="window.app.logout()" id="logout-btn" class="logout-link hidden">Log Out</a>
     </header>
 
-    <!-- LOGIN VIEW -->
-    <div id="login-view">
-        <h2>Welcome Back</h2>
-        <p style="color:#666; margin-bottom:20px;">Log in to sync your checklists across devices.</p>
-        <div id="auth-error" class="auth-error">Error message here</div>
-        <input type="email" id="email" class="login-input" placeholder="Email Address">
-        <input type="password" id="password" class="login-input" placeholder="Password">
-        <button class="btn-primary" style="width:100%; margin-bottom:10px; padding:12px;" onclick="window.app.login()">Log In</button>
-        <button class="btn-secondary" style="width:100%; padding:12px;" onclick="window.app.signup()">New? Sign Up</button>
+    <!-- DASHBOARD -->
+    <div id="dashboard-view">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+            <h2 style="font-size: 1rem; color: #999; text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">My Lists</h2>
+            <button class="btn-fab" onclick="window.app.createNew()">+</button>
+        </div>
+
+        <div id="checklist-list" class="checklist-grid"></div>
+        
+        <div id="empty-state" class="hidden" style="text-align: center; color: #ccc; margin-top: 80px;">
+            <p>No checklists yet.</p>
+        </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboard-view" class="hidden">
-        <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-            <button class="btn-primary" onclick="window.app.createNew()">+ New Checklist</button>
-        </div>
-        <div id="checklist-list" class="checklist-grid"></div>
-        <div id="empty-state" class="hidden" style="text-align: center; color: #aaa; margin-top: 60px;">
-            <div style="font-size: 40px; margin-bottom: 10px;">☁️</div>
-            <p>Ready for your first checklist.</p>
-        </div>
+    <!-- TOAST FOR UNDO -->
+    <div id="toast" class="hidden">
+        <span>Checklist deleted.</span>
+        <button onclick="window.app.undoDelete()">Undo</button>
     </div>
 
     <!-- EDITOR -->
     <div id="editor-view" class="hidden">
-        <h2 style="margin-bottom: 15px;">Edit Checklist</h2>
-        <div class="input-group">
-            <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off" style="font-weight: bold;">
-        </div>
-        <div class="input-group" style="margin-bottom:5px;">
-            <label>Steps</label>
-        </div>
+        <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off">
         <div id="editor-items" class="editor-items-list"></div>
-        <button class="btn-secondary" style="width:100%; margin-bottom: 20px; border-style: dashed; opacity: 0.6;" onclick="window.app.addEditorItem()">+ Add Step</button>
-        <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 15px; margin-top: auto;">
-            <button class="btn-text" onclick="window.app.deleteChecklist()" style="color: #d9534f;">Delete</button>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-text" onclick="window.app.showDashboard()">Cancel</button>
-                <button class="btn-primary" onclick="window.app.saveChecklist()">Save</button>
-            </div>
+        <div style="display: flex; justify-content: flex-end; gap:15px; border-top: 1px solid #eee; padding-top: 20px; margin-top: auto;">
+            <button class="btn-text" style="font-size:1rem;" onclick="window.app.showDashboard()">Cancel</button>
+            <button class="btn-primary" onclick="window.app.saveChecklist()">Save</button>
         </div>
     </div>
 
     <!-- RUNNER -->
     <div id="runner-view" class="hidden">
         <div class="runner-header">
-            <h2 id="runner-title" style="margin:0; font-size:1.2rem;">Title</h2>
+            <div class="runner-title-text" id="runner-title">Title</div>
             <div id="runner-timer" class="timer">00:00</div>
         </div>
         <ul id="runner-list" class="focus-list"></ul>
         <div class="runner-footer">
-            <div id="runner-stats-display" class="runner-stats hidden">
-                <strong>Session Complete!</strong><br> Time: <span id="final-time"></span>
-            </div>
-            <button id="btn-complete" class="btn-primary hidden" style="width: 100%; padding: 12px; font-size: 1.1em;" onclick="window.app.finishRun()">Complete Session</button>
-            <button id="btn-abort" class="btn-text" onclick="window.app.showDashboard()">Abort Session</button>
+            <button id="btn-complete" class="btn-primary hidden" style="width: 100%; font-size:1.1rem; padding:12px;" onclick="window.app.finishRun()">Done</button>
+            <button id="btn-abort" class="btn-text" onclick="window.app.showDashboard()">Abort</button>
         </div>
     </div>
 </div>
@@ -227,113 +397,77 @@
 <!-- FIREBASE MODULE -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-    /* --- 1. PASTE YOUR CONFIG HERE --- */
-    // REPLACE the object below with the keys you copied from Firebase Console!
+    // --- YOUR FIREBASE CONFIG ---
     const firebaseConfig = {
-        apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
+  apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
   authDomain: "checklistflow-f9fe5.firebaseapp.com",
   projectId: "checklistflow-f9fe5",
   storageBucket: "checklistflow-f9fe5.firebasestorage.app",
   messagingSenderId: "630257615694",
   appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
     };
-    /* -------------------------------- */
 
     const fbApp = initializeApp(firebaseConfig);
     const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-id';
     
-    // Using a consistent ID for your production app
-    const appId = 'focusflow-production'; 
-    
-    // Global User State
     let currentUser = null;
-    let unsubscribeSnapshot = null;
 
-    // 2. DEFINE APP LOGIC
     window.app = {
         data: [], 
         activeId: null,
         timerInterval: null,
         startTime: null,
         dragSrcEl: null,
+        // Variables for Undo
+        deletedItem: null,
+        deleteTimeout: null,
 
-        // --- AUTH & INIT ---
         init: async function() {
-            // We do NOT sign in anonymously anymore. We wait for user action.
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     currentUser = user;
-                    document.getElementById('sync-status').innerText = "☁️ Synced: " + user.email;
-                    document.getElementById('login-view').classList.add('hidden');
-                    document.getElementById('logout-btn').classList.remove('hidden');
-                    this.showDashboard(); // Force show dashboard on auth
+                    this.updateSyncStatus();
                     this.setupRealtimeListener();
                 } else {
-                    currentUser = null;
-                    if(unsubscribeSnapshot) unsubscribeSnapshot();
-                    document.getElementById('sync-status').innerText = "Not Logged In";
-                    document.getElementById('login-view').classList.remove('hidden');
-                    document.getElementById('dashboard-view').classList.add('hidden');
-                    document.getElementById('editor-view').classList.add('hidden');
-                    document.getElementById('runner-view').classList.add('hidden');
-                    document.getElementById('logout-btn').classList.add('hidden');
+                    document.getElementById('sync-status').innerText = "OFFLINE";
                 }
             });
         },
 
-        // --- LOGIN / SIGNUP FUNCTIONS ---
-        login: async function() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const errEl = document.getElementById('auth-error');
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                errEl.style.display = 'none';
-            } catch(error) {
-                errEl.innerText = error.message;
-                errEl.style.display = 'block';
-            }
-        },
-
-        signup: async function() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const errEl = document.getElementById('auth-error');
-            if(pass.length < 6) {
-                errEl.innerText = "Password must be at least 6 characters";
-                errEl.style.display = 'block';
-                return;
-            }
-            try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-                errEl.style.display = 'none';
-            } catch(error) {
-                errEl.innerText = error.message;
-                errEl.style.display = 'block';
-            }
-        },
-
-        logout: function() {
-            signOut(auth);
+        updateSyncStatus: function() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            document.getElementById('sync-status').innerText = `Last synced: ${timeStr}, ${dateStr}`;
         },
 
         setupRealtimeListener: function() {
             if (!currentUser) return;
-            // Using the production appId
             const q = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists');
-            
-            unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+            onSnapshot(q, (snapshot) => {
                 const newData = [];
-                snapshot.forEach((doc) => {
-                    newData.push({ ...doc.data(), id: doc.id });
-                });
-
-                this.data = newData;
+                snapshot.forEach((doc) => newData.push({ ...doc.data(), id: doc.id }));
+                
+                // If we have a pending delete item, exclude it from display even if it exists in DB still
+                if (this.deletedItem) {
+                    this.data = newData.filter(item => item.id !== this.deletedItem.id);
+                } else {
+                    this.data = newData;
+                }
+                
                 this.data.sort((a, b) => (b.stats?.runCount || 0) - (a.stats?.runCount || 0));
+                this.updateSyncStatus();
                 
                 if (this.activeId && !document.getElementById('runner-view').classList.contains('hidden')) {
                     const activeList = this.data.find(l => l.id === this.activeId);
@@ -341,93 +475,160 @@
                 } else if (!this.activeId && !document.getElementById('dashboard-view').classList.contains('hidden')) {
                      this.showDashboard(); 
                 }
-            }, (error) => {
-                console.error("Firestore error:", error);
-                document.getElementById('sync-status').innerText = "⚠️ Sync Error";
             });
         },
 
-        // --- DASHBOARD ---
         showDashboard: function() {
             this.stopTimer();
             this.activeId = null;
-            
             document.getElementById('dashboard-view').classList.remove('hidden');
             document.getElementById('editor-view').classList.add('hidden');
             document.getElementById('runner-view').classList.add('hidden');
-            document.getElementById('login-view').classList.add('hidden');
 
             const listEl = document.getElementById('checklist-list');
             listEl.innerHTML = '';
-
-            if (this.data.length === 0) {
-                document.getElementById('empty-state').classList.remove('hidden');
-                return;
-            }
+            if (this.data.length === 0) return document.getElementById('empty-state').classList.remove('hidden');
             document.getElementById('empty-state').classList.add('hidden');
 
             this.data.forEach(list => {
                 const runs = list.stats?.runCount || 0;
-                const last = list.stats?.lastDuration ? `• Last: ${list.stats.lastDuration}` : '';
                 const card = document.createElement('div');
                 card.className = 'checklist-card';
+                
                 card.innerHTML = `
-                    <div class="card-info">
+                    <div class="card-start-btn" onclick="window.app.run('${list.id}')">
+                        <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M13.5 7.13397C14.1667 7.51887 14.1667 8.48113 13.5 8.86603L1.5 15.7942C0.833334 16.1791 0 15.698 0 14.9282L0 1.0718C0 0.301997 0.833333 -0.179129 1.5 0.205771L13.5 7.13397Z"/></svg>
+                    </div>
+                    <div class="card-content">
                         <h3>${list.title}</h3>
-                        <div class="card-stats">Runs: ${runs} ${last}</div>
+                        <div class="card-stats">${runs} runs</div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-secondary" onclick="window.app.edit('${list.id}')">Edit</button>
-                        <button class="btn-primary" onclick="window.app.run('${list.id}')">Start</button>
+                        <div class="action-btn" title="Edit" onclick="window.app.edit('${list.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        </div>
+                        <div class="action-btn" title="Duplicate" onclick="window.app.duplicateChecklist('${list.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </div>
+                        <!-- Delete Button (Fixed Logic) -->
+                        <div class="action-btn delete" title="Delete" onclick="event.stopPropagation(); window.app.deleteChecklist('${list.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </div>
                     </div>
                 `;
                 listEl.appendChild(card);
             });
         },
 
-        // --- EDITOR (Writes to Firebase) ---
-        createNew: function() {
-            this.activeId = null;
-            this.renderEditor('', []);
+        createNew: function() { 
+            this.activeId = null; 
+            this.renderEditor('', []); 
+            setTimeout(() => document.getElementById('edit-title').focus(), 100);
         },
-
+        
         edit: function(id) {
             this.activeId = id;
             const list = this.data.find(l => l.id === id);
             this.renderEditor(list.title, JSON.parse(JSON.stringify(list.items)));
         },
 
+        duplicateChecklist: async function(id) {
+            if(!currentUser) return;
+            const list = this.data.find(l => l.id === id);
+            if(!list) return;
+
+            const newId = Date.now().toString();
+            const newTitle = list.title + " (Copy)";
+            const newItems = list.items.map(i => ({...i}));
+            
+            const newList = { title: newTitle, items: newItems, stats: { runCount: 0 } };
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', newId), newList);
+        },
+
+        // Updated Delete with Undo
+        deleteChecklist: function(id) {
+            // 1. Find and Save Item
+            const item = this.data.find(l => l.id === id);
+            if (!item) return;
+            this.deletedItem = item;
+
+            // 2. Optimistic Update (Remove locally immediately)
+            this.data = this.data.filter(l => l.id !== id);
+            this.showDashboard();
+
+            // 3. Show Toast
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+
+            // 4. Set Timeout for permanent delete
+            if (this.deleteTimeout) clearTimeout(this.deleteTimeout);
+            this.deleteTimeout = setTimeout(async () => {
+                // Time up, actually delete
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id));
+                this.deletedItem = null;
+                toast.classList.add('hidden');
+            }, 5000);
+        },
+
+        undoDelete: function() {
+            if (!this.deletedItem) return;
+            
+            // 1. Clear timeout to prevent DB deletion
+            clearTimeout(this.deleteTimeout);
+            
+            // 2. Restore data locally
+            this.data.push(this.deletedItem);
+            this.deletedItem = null;
+            
+            // 3. Update UI
+            this.showDashboard();
+            document.getElementById('toast').classList.add('hidden');
+        },
+
         renderEditor: function(title, items) {
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('editor-view').classList.remove('hidden');
             
-            document.getElementById('edit-title').value = title;
+            const titleInput = document.getElementById('edit-title');
+            titleInput.value = title;
+            
+            titleInput.onkeydown = (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    const firstStep = document.querySelector('.step-input');
+                    if(firstStep) firstStep.focus(); else window.app.addEditorItem();
+                }
+            };
+
             const container = document.getElementById('editor-items');
             container.innerHTML = '';
+            
+            if (items.length === 0) items = [{text:''}]; 
+            items.forEach((item) => this.addEditorItemDOM(item)); 
+            
+            this.updateLoopDropdowns(); 
+        },
 
-            if (items.length === 0) items = [{text:''}];
-
-            items.forEach((item, index) => {
-                this.addEditorItemDOM(item, index);
-            });
+        addEditorItemDOM: function(item) {
+             const container = document.getElementById('editor-items');
+             const newEl = this.createEditorItemEl(item);
+             container.appendChild(newEl);
         },
 
         addEditorItem: function(insertAfterIndex = null) {
             const container = document.getElementById('editor-items');
             const item = { text: '', url: '', loopTarget: null };
+            const newEl = this.createEditorItemEl(item);
             
             if (insertAfterIndex !== null) {
-                const newEl = this.createEditorItemEl(item);
                 const siblings = Array.from(container.children);
                 if (siblings[insertAfterIndex]) siblings[insertAfterIndex].after(newEl);
                 else container.appendChild(newEl);
-                newEl.querySelector('.step-input').focus();
             } else {
-                const newEl = this.createEditorItemEl(item);
                 container.appendChild(newEl);
                 container.scrollTop = container.scrollHeight;
-                newEl.querySelector('.step-input').focus();
             }
+            newEl.querySelector('.step-input').focus();
             this.updateLoopDropdowns();
         },
 
@@ -435,35 +636,35 @@
             const div = document.createElement('div');
             div.className = 'editor-item';
             div.draggable = true;
-            div.addEventListener('dragstart', this.handleDragStart.bind(this));
-            div.addEventListener('dragover', this.handleDragOver.bind(this));
-            div.addEventListener('drop', this.handleDrop.bind(this));
-            div.addEventListener('dragend', this.handleDragEnd.bind(this));
-
+            
             div.innerHTML = `
-                <div class="editor-main-row">
-                    <span class="drag-handle">☰</span>
-                    <input type="text" class="step-input" value="${item.text || ''}" placeholder="">
-                    <button class="btn-icon ${item.url ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'link')" title="Add Link">🔗</button>
-                    <button class="btn-icon ${item.loopTarget !== null && item.loopTarget !== undefined ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'loop')" title="Loop/Branch">🔁</button>
-                    <button class="btn-icon" onclick="this.closest('.editor-item').remove(); window.app.updateLoopDropdowns();" title="Remove" style="color:#d9534f;">✕</button>
+                <span class="drag-handle">::</span>
+                <input type="text" class="step-input" value="${item.text || ''}" placeholder="">
+                
+                <div class="editor-tools">
+                    <button class="btn-icon ${item.url ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'link')" title="Link">🔗</button>
+                    <button class="btn-icon ${item.loopTarget !== null ? 'active' : ''}" onclick="window.app.toggleExtra(this, 'loop')" title="Loop">↰</button>
+                    <button class="btn-icon" onclick="this.closest('.editor-item').remove(); window.app.updateLoopDropdowns();" title="Remove" style="color:#EA475F;">×</button>
                 </div>
-                <div class="editor-extra-panel hidden link-panel">
-                    <span>URL:</span> <input type="text" class="url-input" value="${item.url || ''}" placeholder="https://..." style="flex-grow:1;">
+                
+                <div style="width:100%; display:none;"></div>
+                <div class="editor-extra-panel hidden link-panel" style="width:100%;">
+                    <span>URL:</span> <input type="text" class="url-input" value="${item.url || ''}" style="flex-grow:1;">
                 </div>
-                <div class="editor-extra-panel hidden loop-panel">
-                    <span>Loop back to Step:</span> <select class="loop-select" style="flex-grow:1;"><option value="">(None)</option></select>
+                <div class="editor-extra-panel hidden loop-panel" style="width:100%;">
+                    <span>Loop to:</span> <select class="loop-select" style="flex-grow:1;"><option value="">(None)</option></select>
                 </div>
             `;
+            
+            div.style.flexWrap = "wrap"; 
 
             div.querySelector('.step-input').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    const currentIdx = Array.from(div.parentNode.children).indexOf(div);
-                    this.addEditorItem(currentIdx);
+                    this.addEditorItem(Array.from(div.parentNode.children).indexOf(div));
                 }
             });
-
+            
             if (item.url) div.querySelector('.link-panel').classList.remove('hidden');
             if (item.loopTarget !== null) {
                 div.querySelector('.loop-panel').classList.remove('hidden');
@@ -473,8 +674,7 @@
         },
 
         toggleExtra: function(btn, type) {
-            const item = btn.closest('.editor-item');
-            item.querySelector(`.${type}-panel`).classList.toggle('hidden');
+            btn.closest('.editor-item').querySelector(`.${type}-panel`).classList.toggle('hidden');
             btn.classList.toggle('active');
             if (type === 'loop') this.updateLoopDropdowns();
         },
@@ -484,103 +684,54 @@
             items.forEach((itemEl, index) => {
                 const select = itemEl.querySelector('.loop-select');
                 const currentVal = select.value || itemEl.dataset.tempLoopTarget;
-                select.innerHTML = '<option value="">(None - Continue to finish)</option>';
+                select.innerHTML = '<option value="">(None)</option>';
                 for(let i=0; i < index; i++) {
-                    const prevInput = items[i].querySelector('.step-input');
-                    const text = prevInput.value.substring(0, 20) || `Step ${i+1}`;
+                    const text = items[i].querySelector('.step-input').value.substring(0, 20) || `Step ${i+1}`;
                     const opt = document.createElement('option');
                     opt.value = i;
-                    opt.text = `Step ${i+1}: ${text}...`;
+                    opt.text = `${i+1}. ${text}...`;
                     if (currentVal == i) opt.selected = true;
                     select.appendChild(opt);
                 }
             });
         },
 
-        // --- DRAG DROP ---
-        handleDragStart: function(e) { this.dragSrcEl = e.currentTarget; e.dataTransfer.effectAllowed = 'move'; e.currentTarget.style.opacity = '0.4'; },
-        handleDragOver: function(e) { if (e.preventDefault) e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; },
-        handleDrop: function(e) {
-            e.stopPropagation();
-            const target = e.currentTarget;
-            if (this.dragSrcEl !== target) {
-                const container = target.parentNode;
-                const items = Array.from(container.children);
-                if (items.indexOf(this.dragSrcEl) < items.indexOf(target)) target.after(this.dragSrcEl);
-                else target.before(this.dragSrcEl);
-                this.updateLoopDropdowns();
-            }
-            return false;
-        },
-        handleDragEnd: function(e) { e.currentTarget.style.opacity = '1'; },
-
-        // --- SAVE TO FIREBASE ---
         saveChecklist: async function() {
             if (!currentUser) return;
             const title = document.getElementById('edit-title').value;
-            if (!title.trim()) return alert("Please name your checklist");
-
+            if (!title.trim()) return alert("Name required");
             const items = [];
             document.querySelectorAll('.editor-item').forEach(el => {
                 const text = el.querySelector('.step-input').value.trim();
                 const url = el.querySelector('.url-input').value.trim();
                 const loopVal = el.querySelector('.loop-select').value;
-                if (text) {
-                    items.push({ 
-                        text, url, 
-                        loopTarget: loopVal !== "" ? parseInt(loopVal) : null, 
-                        checked: false 
-                    });
-                }
+                if (text) items.push({ text, url, loopTarget: loopVal !== "" ? parseInt(loopVal) : null, checked: false });
             });
-
-            if (items.length === 0) return alert("Add at least one step");
-
+            if (items.length === 0) return alert("Add steps");
             const id = this.activeId || Date.now().toString();
-            // Preserve stats if editing
             const existingStats = this.activeId ? (this.data.find(l=>l.id===id)?.stats || {}) : { runCount: 0 };
-            
-            const docData = { title, items, stats: existingStats };
-            
-            // Write to Firestore
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id);
-            await setDoc(ref, docData);
-
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { title, items, stats: existingStats });
             this.showDashboard();
         },
 
-        deleteChecklist: async function() {
-            if (!this.activeId || !currentUser) return this.showDashboard();
-            if (confirm("Delete this checklist?")) {
-                const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
-                await deleteDoc(ref);
-                this.showDashboard();
-            }
-        },
-
-        // --- RUNNER (Writes to Firebase for Sync) ---
         run: function(id) {
             const list = this.data.find(l => l.id === id);
             this.activeId = id;
-            
-            const updatedItems = list.items.map(i => ({...i, checked: false}));
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id);
-            updateDoc(ref, { items: updatedItems }); 
-            
+            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { 
+                items: list.items.map(i => ({...i, checked: false})) 
+            });
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('runner-view').classList.remove('hidden');
             document.getElementById('runner-title').innerText = list.title;
             document.getElementById('btn-complete').classList.add('hidden');
             document.getElementById('btn-abort').classList.remove('hidden');
-            document.getElementById('runner-stats-display').classList.add('hidden');
-            
+            this.renderRunnerList(list);
             this.startTimer();
         },
 
         renderRunnerList: function(list) {
             const container = document.getElementById('runner-list');
             container.innerHTML = '';
-            
             const activeIndex = list.items.findIndex(i => !i.checked);
 
             list.items.forEach((item, index) => {
@@ -594,11 +745,27 @@
 
                 li.className = className;
                 li.id = `runner-item-${index}`;
+                
+                // 4. Inline Loop Buttons with Icons (Down Arrow / Loop Arrow)
+                let actionsHtml = '';
+                if(item.url) {
+                    actionsHtml += `<a href="${item.url}" target="_blank" class="runner-link-btn" onclick="event.stopPropagation()">Link ↗</a>`;
+                }
+                
+                if(!item.checked && item.loopTarget !== null && index === activeIndex) {
+                    actionsHtml = `
+                        <div class="loop-inline-actions">
+                            <button class="btn-loop-inline" onclick="event.stopPropagation(); window.app.toggleCheck(${index})" title="Continue">↓</button>
+                            <button class="btn-loop-inline primary" onclick="event.stopPropagation(); window.app.executeLoop(${index}, ${item.loopTarget})" title="Loop Back">↰</button>
+                        </div>
+                    `;
+                }
+
                 li.innerHTML = `
                     <div class="focus-row-main" onclick="window.app.handleItemClick(${index})">
-                        <div class="checkbox-circle">${item.checked ? '✓' : ''}</div>
+                        <div class="checkbox-square">${item.checked ? '✓' : ''}</div>
                         <span class="focus-text" style="flex-grow:1;">${item.text}</span>
-                        ${item.url ? `<a href="${item.url}" target="_blank" class="runner-link-btn" onclick="event.stopPropagation()">🔗 Open Link</a>` : ''}
+                        ${actionsHtml}
                     </div>
                 `;
                 container.appendChild(li);
@@ -607,8 +774,10 @@
             if (activeIndex !== -1) {
                 setTimeout(() => {
                     const el = document.getElementById(`runner-item-${activeIndex}`);
-                    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+                    if(el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 50); 
             } else if (list.items.length > 0) {
                 this.readyToComplete();
             }
@@ -618,94 +787,57 @@
             const list = this.data.find(l => l.id === this.activeId);
             const item = list.items[index];
             if (!item.checked && item.loopTarget !== null && item.loopTarget !== undefined) {
-                this.showLoopDecision(index, item.loopTarget);
+                // Do nothing
             } else {
                 this.toggleCheck(index);
             }
         },
 
-        showLoopDecision: function(index, targetIndex) {
-            const li = document.getElementById(`runner-item-${index}`);
-            if (li.querySelector('.loop-decision')) return;
-            const div = document.createElement('div');
-            div.className = 'loop-decision';
-            div.innerHTML = `
-                <span>🔁 <strong>Loop?</strong> Go to Step ${targetIndex + 1}?</span>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-primary" onclick="event.stopPropagation(); window.app.executeLoop(${index}, ${targetIndex})">Yes</button>
-                    <button class="btn-secondary" onclick="event.stopPropagation(); window.app.toggleCheck(${index})">No</button>
-                </div>
-            `;
-            li.appendChild(div);
-        },
-
-        // UPDATE FIRESTORE ON CHECK
         toggleCheck: function(index) {
             if (!currentUser || !this.activeId) return;
-            const list = this.data.find(l => l.id === this.activeId);
-            const updatedItems = [...list.items];
-            updatedItems[index].checked = !updatedItems[index].checked;
-            
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
-            updateDoc(ref, { items: updatedItems });
+            const items = [...this.data.find(l => l.id === this.activeId).items];
+            items[index].checked = !items[index].checked;
+            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items });
         },
 
         executeLoop: function(currentIndex, targetIndex) {
-            if (!currentUser || !this.activeId) return;
-            const list = this.data.find(l => l.id === this.activeId);
-            const updatedItems = [...list.items];
-            
-            for (let i = targetIndex; i <= currentIndex; i++) {
-                updatedItems[i].checked = false;
-            }
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
-            updateDoc(ref, { items: updatedItems });
+            const items = [...this.data.find(l => l.id === this.activeId).items];
+            for (let i = targetIndex; i <= currentIndex; i++) items[i].checked = false;
+            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items });
         },
 
         startTimer: function() {
             this.startTime = Date.now();
-            const timerEl = document.getElementById('runner-timer');
-            if (!timerEl) return;
-            timerEl.innerText = "00:00";
-            this.stopTimer();
             this.timerInterval = setInterval(() => {
                 const diff = Math.floor((Date.now() - this.startTime) / 1000);
                 const m = Math.floor(diff / 60).toString().padStart(2, '0');
                 const s = (diff % 60).toString().padStart(2, '0');
-                timerEl.innerText = `${m}:${s}`;
+                const timeStr = `${m}:${s}`;
+                document.getElementById('runner-timer').innerText = timeStr;
+                
+                const btn = document.getElementById('btn-complete');
+                if(!btn.classList.contains('hidden')) {
+                     btn.innerText = `Done (${timeStr})`;
+                }
             }, 1000);
         },
-
-        stopTimer: function() { if (this.timerInterval) clearInterval(this.timerInterval); },
-
+        stopTimer: function() { clearInterval(this.timerInterval); },
         readyToComplete: function() {
             this.stopTimer();
             document.getElementById('btn-complete').classList.remove('hidden');
             document.getElementById('btn-abort').classList.add('hidden');
-            const timerEl = document.getElementById('runner-timer');
-            if (timerEl) document.getElementById('final-time').innerText = timerEl.innerText;
-            document.getElementById('runner-stats-display').classList.remove('hidden');
+            const finalTime = document.getElementById('runner-timer').innerText;
+            document.getElementById('btn-complete').innerText = `Done (${finalTime})`;
         },
-
         finishRun: async function() {
-            if (!currentUser || !this.activeId) return;
             const list = this.data.find(l => l.id === this.activeId);
-            const duration = document.getElementById('runner-timer').innerText;
-            
-            const newStats = {
-                runCount: (list.stats?.runCount || 0) + 1,
-                lastDuration: duration
-            };
-            const resetItems = list.items.map(i => ({...i, checked: false}));
-
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId);
-            await updateDoc(ref, { items: resetItems, stats: newStats });
-            
+            const stats = { runCount: (list.stats?.runCount || 0) + 1, lastDuration: document.getElementById('runner-timer').innerText };
+            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { 
+                items: list.items.map(i => ({...i, checked: false})), stats 
+            });
             this.showDashboard();
         }
     };
-
-    // Initialize
     window.app.init();
 </script>
 </body>
