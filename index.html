@@ -41,7 +41,6 @@
         .btn-text { background: transparent; color: #999; padding: 6px; font-size: 0.9rem; }
         .btn-text:hover { color: var(--navy); background: rgba(0,0,0,0.05); }
 
-        /* Unified Icon Button Style */
         .btn-icon { 
             padding: 6px; background: transparent; color: #ccc; border-radius: 4px; 
             display: flex; align-items: center; justify-content: center; transition: all 0.2s;
@@ -58,7 +57,7 @@
         }
         .btn-fab:hover { transform: scale(1.05); background: #0e8cb5; }
 
-        /* Header & Auth */
+        /* Header */
         header { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             margin-bottom: 20px; padding-bottom: 10px; gap: 5px; position: relative;
@@ -71,13 +70,24 @@
         }
 
         #auth-section { position: absolute; right: 0; top: 5px; }
-        .btn-auth-save {
-            background: #fff; border: 1px solid var(--border); padding: 6px 12px;
-            font-size: 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px;
-            color: var(--navy); box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .btn-auth-save:hover { border-color: var(--blue); color: var(--blue); }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Login View */
+        #login-view {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; flex-grow: 1; text-align: center;
+        }
+        .login-card {
+            background: white; padding: 40px; border-radius: var(--radius);
+            box-shadow: var(--shadow); max-width: 400px; width: 100%;
+        }
+        .btn-google {
+            background: white; border: 1px solid var(--border); color: var(--navy);
+            width: 100%; padding: 12px; border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 1rem; margin-top: 20px;
+        }
+        .btn-google:hover { background: #f9f9f9; border-color: #ccc; }
 
         /* Checklist Card */
         #dashboard-view .checklist-grid { display: grid; gap: 12px; }
@@ -185,18 +195,28 @@
 <body>
 
 <div class="container">
-    <header>
+    <header id="app-header" class="hidden">
         <div id="auth-section">
-            <button id="btn-auth-link" class="btn-auth-save hidden" onclick="window.app.linkGoogle()">
-                <span style="font-size:14px;">☁️</span> Save Data
-            </button>
-            <img id="user-avatar" class="user-avatar hidden" src="" alt="Profile" title="Sign Out" onclick="window.app.logout()">
+            <img id="user-avatar" class="user-avatar" src="" alt="Profile" title="Sign Out" onclick="window.app.logout()">
         </div>
         <h1>Sequence</h1>
         <div id="sync-status" class="sync-badge">Connecting...</div>
     </header>
 
-    <div id="dashboard-view">
+    <div id="login-view" class="hidden">
+        <div class="login-card">
+            <div style="font-size: 3rem; margin-bottom: 10px;">⚡</div>
+            <h1 style="margin: 0; font-size: 2rem;">Sequence</h1>
+            <p style="color: #666; margin-top: 5px;">Your checklist workflow, synced.</p>
+            
+            <button class="btn-google" onclick="window.app.loginGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
             <h2 style="font-size: 1rem; color: #999; text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">My Lists</h2>
             <button class="btn-fab" onclick="window.app.createNew()">+</button>
@@ -236,7 +256,7 @@
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-    import { getAuth, signInAnonymously, GoogleAuthProvider, linkWithPopup, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     // --- YOUR FIREBASE CONFIG ---
@@ -269,55 +289,62 @@
             // Check auth state
             onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    // Logged In
                     currentUser = user;
-                    this.updateSyncStatus();
-                    this.updateAuthUI(user);
+                    this.updateUIForLogin(true, user);
                     this.setupRealtimeListener();
                 } else {
-                    // Automatically sign in anonymously if no user
-                    signInAnonymously(auth);
+                    // Logged Out
+                    currentUser = null;
+                    this.updateUIForLogin(false);
                 }
             });
         },
 
-        updateAuthUI: function(user) {
-            const linkBtn = document.getElementById('btn-auth-link');
-            const avatar = document.getElementById('user-avatar');
-            
-            if (user.isAnonymous) {
-                linkBtn.classList.remove('hidden');
-                avatar.classList.add('hidden');
-            } else {
-                linkBtn.classList.add('hidden');
-                avatar.classList.remove('hidden');
-                // Use Google Photo or placeholder
+        updateUIForLogin: function(isLoggedIn, user = null) {
+            const loginView = document.getElementById('login-view');
+            const appHeader = document.getElementById('app-header');
+            const dashboardView = document.getElementById('dashboard-view');
+            const editorView = document.getElementById('editor-view');
+            const runnerView = document.getElementById('runner-view');
+
+            if (isLoggedIn) {
+                // Show App
+                loginView.classList.add('hidden');
+                appHeader.classList.remove('hidden');
+                
+                // Set Avatar
+                const avatar = document.getElementById('user-avatar');
                 avatar.src = user.photoURL || 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg';
+                
+                this.updateSyncStatus();
+                // If not in editor/runner, show dashboard
+                if (editorView.classList.contains('hidden') && runnerView.classList.contains('hidden')) {
+                    this.showDashboard();
+                }
+            } else {
+                // Show Login
+                loginView.classList.remove('hidden');
+                appHeader.classList.add('hidden');
+                dashboardView.classList.add('hidden');
+                editorView.classList.add('hidden');
+                runnerView.classList.add('hidden');
             }
         },
 
-        linkGoogle: async function() {
+        loginGoogle: async function() {
             const provider = new GoogleAuthProvider();
             try {
-                // Attempt to upgrade the anonymous account to Google
-                await linkWithPopup(currentUser, provider);
-                alert("Account saved! Your checklists are now linked to your Google Account.");
+                await signInWithPopup(auth, provider);
             } catch (error) {
-                // Check for BOTH 'credential-already-in-use' AND 'email-already-in-use'
-                if (error.code === 'auth/credential-already-in-use' || error.code === 'auth/email-already-in-use') {
-                    // The Google account already exists. Ask to switch.
-                    if(confirm("This Google Account is already linked to another Sequence user.\n\nDo you want to switch to it? \n(Warning: Current temporary checklists will be lost)")) {
-                         await signInWithPopup(auth, provider);
-                    }
-                } else {
-                    alert("Error linking account: " + error.message);
-                }
+                alert("Login failed: " + error.message);
             }
         },
 
         logout: async function() {
             if(confirm("Sign out?")) {
                 await signOut(auth);
-                window.location.reload(); // Reload to trigger new anonymous session
+                // Page will update via onAuthStateChanged
             }
         },
 
