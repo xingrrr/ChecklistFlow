@@ -302,7 +302,8 @@
                 await linkWithPopup(currentUser, provider);
                 alert("Account saved! Your checklists are now linked to your Google Account.");
             } catch (error) {
-                if (error.code === 'auth/credential-already-in-use') {
+                // Check for BOTH 'credential-already-in-use' AND 'email-already-in-use'
+                if (error.code === 'auth/credential-already-in-use' || error.code === 'auth/email-already-in-use') {
                     // The Google account already exists. Ask to switch.
                     if(confirm("This Google Account is already linked to another Sequence user.\n\nDo you want to switch to it? \n(Warning: Current temporary checklists will be lost)")) {
                          await signInWithPopup(auth, provider);
