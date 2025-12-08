@@ -286,7 +286,8 @@
         deleteTimeout: null,
 
         init: async function() {
-            // Check auth state
+            // STRICT AUTH CHECK: 
+            // If user exists, show app. If not, show login. No anonymous.
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     // Logged In
@@ -344,7 +345,7 @@
         logout: async function() {
             if(confirm("Sign out?")) {
                 await signOut(auth);
-                // Page will update via onAuthStateChanged
+                // Page will update via onAuthStateChanged automatically
             }
         },
 
