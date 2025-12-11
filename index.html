@@ -4,30 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sequence</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234DE4F4%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22%232E8B57%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23db616b%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* --- XERO SOLID DOPAMINE DESIGN SYSTEM --- */
+        /* --- WARM CORAL DESIGN SYSTEM --- */
         :root {
-            --bg-body: #F4F5F6;
+            --bg-body: #F9FAFB;
             --bg-card: #FFFFFF;
+            --text-main: #2D3748; /* softer dark grey */
+            --text-muted: #718096;
+            --border: #E2E8F0;
             
-            /* Core Text */
-            --text-main: #0B3C5D; /* Xero Navy */
-            --text-muted: #555555;
-            --border: #DCDCDC;
+            /* User Colors */
+            --primary: #db616b; /* Rose Red */
+            --secondary: #ee7959; /* Coral Orange */
             
-            /* Solid Accents - High Saturation */
-            --cyan: #4DE4F4;
-            --pink: #FF85B3;
-            --yellow: #FFD166;
-            --blue: #2979FF;
-            --green: #2E8B57;
-
             --radius: 12px; 
             --radius-sm: 6px;
-            /* Solid Shadow for Dopamine Pop */
-            --shadow: 0 4px 0 rgba(0,0,0,0.05); 
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --font-stack: 'Varela Round', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
@@ -50,52 +44,46 @@
         button, input, select, textarea { 
             font-family: var(--font-stack); outline: none; 
         }
-        button { cursor: pointer; border: none; transition: all 0.15s ease; font-weight: 700; }
+        button { cursor: pointer; border: none; transition: all 0.2s ease; font-weight: 600; }
 
-        /* Buttons - Solid Colors */
+        /* Buttons */
         .btn-primary { 
-            background: var(--blue); 
-            color: white; border-radius: var(--radius); padding: 12px 24px; font-size: 14px; 
-            box-shadow: 0 4px 0 rgba(11, 60, 93, 0.1); /* Subtle solid shadow */
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; border-radius: var(--radius); padding: 10px 24px; font-size: 14px; 
+            box-shadow: 0 4px 10px rgba(219, 97, 107, 0.3);
         }
-        .btn-primary:hover { 
-            background: var(--cyan); color: var(--text-main); 
-            transform: translateY(-2px);
-        }
+        .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); }
         
         .btn-secondary { 
-            background: transparent; color: var(--text-main); border: 2px solid var(--border); 
+            background: transparent; color: var(--text-main); border: 1px solid var(--border); 
             border-radius: var(--radius); padding: 8px 16px; 
         }
-        .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+        .btn-secondary:hover { border-color: var(--secondary); color: var(--secondary); }
 
-        .btn-text { background: transparent; color: var(--text-muted); padding: 8px; font-size: 0.9rem; }
-        .btn-text:hover { color: var(--blue); background: #f0f0f0; border-radius: 4px; }
+        .btn-text { background: transparent; color: var(--text-muted); padding: 6px; font-size: 0.9rem; }
+        .btn-text:hover { color: var(--primary); background: rgba(0,0,0,0.05); border-radius: 4px; }
 
         /* Icon Buttons */
         .btn-icon { 
-            padding: 8px; background: transparent; color: #999; border-radius: var(--radius-sm); 
+            padding: 6px; background: transparent; color: #CBD5E0; border-radius: var(--radius-sm); 
             display: flex; align-items: center; justify-content: center; transition: all 0.2s;
             border: 1px solid transparent;
         }
-        .btn-icon svg { stroke: currentColor; stroke-width: 2.5; fill: none; width: 20px; height: 20px; }
+        .btn-icon svg { stroke: currentColor; stroke-width: 2; fill: none; width: 18px; height: 18px; }
         
         /* Interaction States */
-        .btn-icon:hover, .btn-icon:focus { color: var(--blue); background: #E6F7FF; }
-        .btn-icon.active { color: var(--blue); background: #E6F7FF; border-color: var(--blue); }
-        .btn-icon.delete:hover { color: white; background: var(--pink); border-color: var(--pink); }
+        .btn-icon:hover, .btn-icon:focus { color: var(--primary); background: rgba(219, 97, 107, 0.1); }
+        .btn-icon.active { color: var(--primary); background: rgba(219, 97, 107, 0.1); border-color: rgba(219, 97, 107, 0.2); }
+        .btn-icon.delete:hover { color: #E53E3E; background: #FFF5F5; border-color: #FED7D7; }
 
-        /* FAB - Dopamine Pop (Solid Pink) */
+        /* FAB */
         .btn-fab {
-            width: 56px; height: 56px; border-radius: 50%; 
-            background: var(--pink); color: var(--text-main);
-            font-size: 32px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.1); border: none; padding: 0; line-height: 1;
+            width: 50px; height: 50px; border-radius: 50%; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+            font-size: 28px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(238, 121, 89, 0.4); border: none; padding: 0; line-height: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .btn-fab:hover { 
-            background: var(--yellow); 
-            transform: scale(1.1) rotate(90deg); 
-        }
+        .btn-fab:hover { transform: scale(1.05) rotate(90deg); }
 
         /* Header - Responsive Layout */
         header { 
@@ -106,27 +94,28 @@
         /* Title Container */
         .header-title-group { display: flex; flex-direction: column; }
         h1 { 
-            color: var(--text-main); font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: -1px;
+            color: var(--text-main); font-size: 1.8rem; font-weight: 700; margin: 0; 
+            background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .sync-badge {
-            font-size: 11px; font-weight: 700; background: var(--cyan); color: var(--text-main); 
+            font-size: 10px; font-weight: 600; background: #FFF5F5; color: var(--primary); 
             padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-            width: fit-content; margin-top: 4px;
+            border: 1px solid rgba(219, 97, 107, 0.2); width: fit-content; margin-top: 4px;
         }
 
         /* Actions Container */
-        #header-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        #header-actions { display: flex; gap: 8px; flex-shrink: 0; }
         
-        /* Profile & Export Buttons (Solid Pill) */
+        /* Profile & Export Buttons (Pill Shape) */
         .pill-btn {
             display: flex; align-items: center; gap: 8px;
-            background: white; border: 2px solid var(--border);
-            padding: 8px 16px; border-radius: 20px;
+            background: white; border: 1px solid var(--border);
+            padding: 6px 14px; border-radius: 20px;
             font-size: 0.85rem; color: var(--text-main);
-            cursor: pointer; transition: all 0.2s;
+            cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .pill-btn:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); }
-        .pill-btn span { font-weight: 700; }
+        .pill-btn:hover { border-color: var(--secondary); color: var(--secondary); transform: translateY(-1px); }
+        .pill-btn span { font-weight: 600; }
 
         /* Login View */
         #login-view {
@@ -135,179 +124,181 @@
         }
         .login-card {
             background: var(--bg-card); padding: 50px; border-radius: 24px;
-            border: 2px solid var(--border);
+            border: 1px solid white;
             box-shadow: var(--shadow); max-width: 400px; width: 100%;
         }
         .btn-google {
-            background: white; border: 2px solid var(--border); color: #333;
-            width: 100%; padding: 14px; border-radius: var(--radius);
+            background: white; border: 1px solid var(--border); color: #333;
+            width: 100%; padding: 12px; border-radius: var(--radius);
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            font-size: 1rem; margin-top: 25px; font-weight: 700;
+            font-size: 1rem; margin-top: 25px; font-weight: 600;
         }
-        .btn-google:hover { border-color: var(--blue); color: var(--blue); }
+        .btn-google:hover { background: #f9f9f9; border-color: #ccc; }
 
         /* Dashboard & Search */
-        #dashboard-view .checklist-grid { display: grid; gap: 15px; }
+        #dashboard-view .checklist-grid { display: grid; gap: 12px; }
         
         .search-bar {
-            width: 100%; padding: 14px 18px; border: 2px solid var(--border); 
+            width: 100%; padding: 14px 18px; border: 1px solid var(--border); 
             background: var(--bg-card); color: var(--text-main);
             border-radius: var(--radius); margin-bottom: 25px; 
             font-size: 1rem; transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }
-        .search-bar:focus { outline: none; border-color: var(--blue); }
-        .search-bar::placeholder { color: #aaa; }
+        .search-bar:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(238, 121, 89, 0.1); }
+        .search-bar::placeholder { color: #A0AEC0; }
 
         .checklist-card {
-            background: var(--bg-card); padding: 18px 24px; border-radius: var(--radius); 
-            border: 2px solid white;
+            background: var(--bg-card); padding: 14px 20px; border-radius: var(--radius); 
+            border: 1px solid transparent;
             box-shadow: var(--shadow);
             transition: all 0.2s; display: flex; align-items: center; gap: 15px;
             cursor: default;
         }
         .checklist-card:hover, .checklist-card:focus { 
-            transform: translateY(-3px); border-color: var(--cyan); outline: none;
+            transform: translateY(-2px); border-color: var(--secondary); outline: none;
+            box-shadow: 0 8px 20px rgba(238, 121, 89, 0.1);
         }
         
         /* Card Circle Button */
         .card-start-btn {
-            width: 40px; height: 40px; border-radius: 50%;
-            border: 2px solid #eee; color: #ccc;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid #E2E8F0; color: #CBD5E0;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.2s; flex-shrink: 0;
         }
-        .checklist-card:hover .card-start-btn { border-color: var(--green); color: var(--green); background: #F0FFF4; }
+        .checklist-card:hover .card-start-btn { border-color: var(--primary); color: var(--primary); }
+        .checklist-card:focus .card-start-btn { border-color: var(--primary); color: var(--primary); background: rgba(219, 97, 107, 0.05); }
 
         .card-content { flex-grow: 1; }
-        .card-content h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
-        .card-content .card-stats { font-size: 0.8rem; color: #999; margin-top: 4px; font-weight: 500; }
+        .card-content h3 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-main); }
+        .card-content .card-stats { font-size: 0.75rem; color: #A0AEC0; margin-top: 4px; }
         
-        .card-actions { display: flex; gap: 8px; opacity: 0; transition: 0.2s; }
+        .card-actions { display: flex; gap: 5px; opacity: 0; transition: 0.2s; }
         .checklist-card:hover .card-actions, .checklist-card:focus-within .card-actions { opacity: 1; }
         
         /* Editor */
         #editor-view { 
-            background: var(--bg-card); padding: 30px; border-radius: 24px; border: 2px solid var(--border);
-            box-shadow: none; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
+            background: var(--bg-card); padding: 30px; border-radius: 24px; border: 1px solid white;
+            box-shadow: var(--shadow); flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
         }
         #edit-title {
-            width: 100%; border: none; font-size: 1.8rem; font-weight: 800; color: var(--text-main);
-            padding: 10px 0; outline: none; background: transparent; border-bottom: 3px solid transparent;
+            width: 100%; border: none; font-size: 1.6rem; font-weight: 700; color: var(--text-main);
+            padding: 10px 0; outline: none; background: transparent; border-bottom: 2px solid transparent;
             margin-bottom: 10px; font-family: var(--font-stack);
         }
-        #edit-title:focus { border-bottom-color: var(--pink); }
+        #edit-title:focus { border-bottom-color: var(--secondary); }
         
         .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         
         /* Editor Item - Notebook Feel */
         .editor-item { 
-            display: flex; align-items: center; gap: 12px; padding: 12px 0; 
-            border-bottom: 2px solid #f0f0f0; 
+            display: flex; align-items: center; gap: 12px; padding: 10px 0; 
+            border-bottom: 1px solid #EDF2F7; /* Visible dividing line */
             transition: background-color 0.2s; background: transparent;
             position: relative;
         }
-        .editor-item:focus-within { background: #fafafa; }
-        .editor-item.dragging { opacity: 0.5; background: #E6F7FF; border: 2px dashed var(--blue); }
+        .editor-item:focus-within { background: #F7FAFC; }
+        .editor-item.dragging { opacity: 0.5; background: #FFF5F5; border: 1px dashed var(--primary); }
         
         /* Drag Handle */
         .drag-handle { 
-            color: #ddd; cursor: grab; font-size: 1.2rem; transition: 0.2s; 
+            color: #CBD5E0; cursor: grab; font-size: 1.2rem; transition: 0.2s; 
             padding: 4px; line-height: 0.8; user-select: none;
         }
-        .drag-handle:hover, .editor-item:focus-within .drag-handle { color: var(--blue); }
+        .drag-handle:hover, .editor-item:focus-within .drag-handle { color: var(--primary); }
         
         /* Visual Checkbox Box */
         .editor-checkbox-visual {
-            width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 6px; flex-shrink: 0;
+            width: 18px; height: 18px; border: 2px solid #E2E8F0; border-radius: 5px; flex-shrink: 0;
             transition: 0.2s; background: white;
         }
-        .editor-item:focus-within .editor-checkbox-visual { border-color: var(--blue); }
+        .editor-item:focus-within .editor-checkbox-visual { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(219, 97, 107, 0.1); }
 
         .editor-item input.step-input { 
-            flex-grow: 1; border: none; font-size: 1.05rem; color: var(--text-main); outline: none; 
-            font-family: var(--font-stack); background: transparent; padding: 0 4px; font-weight: 500;
+            flex-grow: 1; border: none; font-size: 1rem; color: var(--text-main); outline: none; 
+            font-family: var(--font-stack); background: transparent; padding: 0 4px;
         }
         
-        /* Tool Buttons */
-        .editor-tools { opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; gap: 6px; }
+        /* Tool Buttons - Reveal on Focus/Hover */
+        .editor-tools { opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; gap: 4px; }
         .editor-item:hover .editor-tools, .editor-item:focus-within .editor-tools { opacity: 1; pointer-events: auto; }
 
         /* Panels (Link/Copy/Loop) */
         .editor-extra-panel { 
-            padding: 12px 14px 12px 50px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid var(--yellow);
-            font-size: 0.9rem; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 100%;
+            padding: 10px 12px 10px 50px; background: #F7FAFC; border-radius: 8px; border-left: 3px solid var(--border);
+            font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; width: 100%;
         }
         .panel-row { display: flex; align-items: center; gap: 10px; width: 100%; }
         
         .editor-extra-panel input, .editor-extra-panel select { 
-            padding: 8px; border: 2px solid #eee; border-radius: 6px; background: white; color: var(--text-main); 
+            padding: 6px; border: 1px solid #E2E8F0; border-radius: 4px; background: white; color: var(--text-main); 
         }
-        .editor-extra-panel input:focus, .editor-extra-panel select:focus { border-color: var(--blue); }
+        .editor-extra-panel input:focus, .editor-extra-panel select:focus { border-color: var(--secondary); }
         .editor-extra-panel textarea { 
-            width: 100%; padding: 10px; border: 2px solid #eee; border-radius: 6px; 
-            background: white; color: var(--text-main); font-family: monospace; font-size: 0.9rem; resize: vertical; min-height: 60px; 
+            width: 100%; padding: 8px; border: 1px solid #E2E8F0; border-radius: 4px; 
+            background: white; color: var(--text-main); font-family: monospace; font-size: 0.85rem; resize: vertical; min-height: 60px; 
         }
         
         /* Runner */
         #runner-view { display: flex; flex-direction: column; height: 100%; position: relative; }
         .runner-header { 
-            display: flex; justify-content: space-between; align-items: center; padding: 25px 0; 
-            border-bottom: 2px solid var(--border); background: var(--bg-body); z-index: 20;
+            display: flex; justify-content: space-between; align-items: center; padding: 20px 0; 
+            border-bottom: 1px solid var(--border); background: var(--bg-body); z-index: 20;
         }
-        .runner-title-text { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
-        /* Solid Yellow Timer for Dopamine */
-        .timer { font-family: monospace; font-size: 1rem; color: var(--text-main); background: var(--yellow); padding: 6px 12px; border-radius: 6px; font-weight: 700; }
+        .runner-title-text { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        .timer { font-family: monospace; font-size: 0.9rem; color: var(--primary); background: #FFF5F5; padding: 4px 8px; border-radius: 4px; }
         
         .focus-list { list-style: none; padding: 45vh 30px; flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; scrollbar-width: none; margin: 0; }
         .focus-list::-webkit-scrollbar { display: none; }
         
         .focus-item { 
-            padding: 18px 24px; margin-bottom: 12px; border-radius: 16px; background: transparent; 
+            padding: 16px 20px; margin-bottom: 10px; border-radius: 16px; background: transparent; 
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; gap: 10px; 
-            cursor: pointer; border: 2px solid transparent; transform-origin: center center;
+            cursor: pointer; border: 1px solid transparent; transform-origin: center center;
         }
-        .focus-row-main { display: flex; align-items: center; gap: 18px; width: 100%; }
+        .focus-row-main { display: flex; align-items: center; gap: 15px; width: 100%; }
         
-        /* Runner Active State - Solid Pop */
+        /* Runner Active State */
         .focus-item.active { 
-            background: #fff; transform: scale(1.02); 
-            box-shadow: 0 8px 0 rgba(0,0,0,0.05); 
-            border: 2px solid var(--cyan); opacity: 1; z-index: 10; 
+            background: #fff; transform: scale(1.05); 
+            box-shadow: 0 10px 30px rgba(238, 121, 89, 0.15); 
+            border: 1px solid var(--secondary); opacity: 1; z-index: 10; 
         }
         .focus-item:not(.active) { transform: scale(0.95); opacity: 0.4; filter: grayscale(100%); }
-        .focus-item.completed .focus-text { text-decoration: line-through; color: #aaa; }
+        .focus-item.completed .focus-text { text-decoration: line-through; color: #A0AEC0; }
         
         /* Runner Checkbox */
         .checkbox-square { 
-            width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 6px; 
+            width: 22px; height: 22px; border: 2px solid #CBD5E0; border-radius: 6px; 
             display: flex; align-items: center; justify-content: center; color: white; 
-            flex-shrink: 0; transition: all 0.2s; font-size: 16px; margin-top: 1px; font-weight: 900;
+            flex-shrink: 0; transition: all 0.2s; font-size: 14px; margin-top: 1px;
         }
-        .focus-item.active .checkbox-square { border-color: var(--cyan); box-shadow: 0 0 0 2px var(--cyan); }
-        .focus-item.completed .checkbox-square { background: var(--green); border-color: var(--green); }
+        .focus-item.active .checkbox-square { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(238, 121, 89, 0.2); }
+        .focus-item.completed .checkbox-square { background: var(--primary); border-color: var(--primary); }
         
-        .focus-text { font-size: 1.2rem; line-height: 1.4; color: var(--text-main); font-weight: 600; }
+        .focus-text { font-size: 1.1rem; line-height: 1.4; color: var(--text-main); font-weight: 500; }
         
-        .loop-inline-actions { display: flex; gap: 10px; margin-left: auto; }
+        .loop-inline-actions { display: flex; gap: 8px; margin-left: auto; }
         .runner-action-btn {
-            width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            border: 2px solid #eee; background: white; color: var(--text-muted); transition: all 0.2s;
+            width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #eee; background: white; color: var(--text-muted); transition: all 0.2s;
         }
-        .runner-action-btn:hover { border-color: var(--blue); color: var(--blue); background: #f0faff; }
-        .runner-action-btn.primary { background: var(--blue); color: white; border-color: var(--blue); }
-        .runner-action-btn.primary:hover { background: var(--cyan); color: var(--text-main); border-color: var(--cyan); }
+        .runner-action-btn:hover { border-color: var(--secondary); color: var(--secondary); background: #FFF5F5; }
+        .runner-action-btn.primary { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .runner-action-btn.primary:hover { background: var(--primary); border-color: var(--primary); }
         
-        .runner-footer { margin-top: auto; text-align: center; padding: 20px; border-top: 2px solid var(--border); background: var(--bg-body); position: sticky; bottom: 0; z-index: 30; }
+        .runner-footer { margin-top: auto; text-align: center; padding: 20px; border-top: 1px solid var(--border); background: var(--bg-body); position: sticky; bottom: 0; z-index: 30; }
 
         /* Toast */
         #toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--text-main); color: white; padding: 14px 28px; border-radius: 50px;
-            display: flex; align-items: center; gap: 15px; box-shadow: 0 8px 0 rgba(0,0,0,0.1);
-            z-index: 1000; font-size: 1rem; animation: slideUp 0.3s ease-out; font-weight: 600;
+            background: #2D3748; color: white; padding: 12px 24px; border-radius: 50px;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000; font-size: 0.9rem; animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        #toast button { background: transparent; color: var(--cyan); padding: 0; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; }
+        #toast button { background: transparent; color: var(--secondary); padding: 0; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; }
         #toast button:hover { text-decoration: underline; color: #fff; }
     </style>
 </head>
@@ -333,14 +324,12 @@
         <div class="login-card">
             <div style="font-size: 3rem; margin-bottom: 20px; display:inline-block; position:relative;">
                 <svg width="60" height="60" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="#4DE4F4" stroke-width="8" fill="none" stroke-dasharray="60 20" transform="rotate(30 50 50)"/>
-                    <circle cx="50" cy="50" r="25" stroke="#FF85B3" stroke-width="8" fill="none" stroke-dasharray="40 30" transform="rotate(-20 50 50)"/>
-                    <circle cx="80" cy="20" r="6" fill="#FFD166"/>
-                    <circle cx="20" cy="80" r="6" fill="#2979FF"/>
+                    <circle cx="50" cy="50" r="40" stroke="#db616b" stroke-width="8" fill="none" stroke-dasharray="60 20" transform="rotate(30 50 50)"/>
+                    <circle cx="50" cy="50" r="25" stroke="#ee7959" stroke-width="8" fill="none" stroke-dasharray="40 30" transform="rotate(-20 50 50)"/>
                 </svg>
             </div>
             <h1 style="margin: 0; font-size: 2rem; color: var(--text-main);">Sequence</h1>
-            <p style="color: #888; margin-top: 10px;">Your checklist workflow, synced.</p>
+            <p style="color: #718096; margin-top: 10px;">Your checklist workflow, synced.</p>
             
             <button class="btn-google" onclick="window.app.loginGoogle()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20">
@@ -351,14 +340,14 @@
 
     <div id="dashboard-view" class="hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
-            <h2 style="font-size: 0.9rem; color: #999; text-transform:uppercase; letter-spacing:1px; font-weight:800;">My Lists</h2>
+            <h2 style="font-size: 0.9rem; color: #A0AEC0; text-transform:uppercase; letter-spacing:1px; font-weight:700;">My Lists</h2>
             <button class="btn-fab" onclick="window.app.createNew()">+</button>
         </div>
         
         <input type="text" id="search-input" class="search-bar" placeholder="Search checklists..." oninput="window.app.filterChecklists(this.value)">
 
         <div id="checklist-list" class="checklist-grid"></div>
-        <div id="empty-state" class="hidden" style="text-align: center; color: #999; margin-top: 80px;">
+        <div id="empty-state" class="hidden" style="text-align: center; color: #A0AEC0; margin-top: 80px;">
             <p>No checklists found.</p>
         </div>
     </div>
@@ -371,7 +360,7 @@
     <div id="editor-view" class="hidden">
         <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off">
         <div id="editor-items" class="editor-items-list"></div>
-        <div style="display: flex; justify-content: flex-end; gap:15px; border-top: 2px solid #eee; padding-top: 20px; margin-top: auto;">
+        <div style="display: flex; justify-content: flex-end; gap:15px; border-top: 1px solid #EDF2F7; padding-top: 20px; margin-top: auto;">
             <button class="btn-text" style="font-size:1rem;" onclick="window.app.showDashboard()">Cancel</button>
             <button class="btn-primary" onclick="window.app.saveChecklist()">Save</button>
         </div>
@@ -457,21 +446,17 @@
 
                 const activeIndex = list.items.findIndex(i => !i.checked);
 
-                // Enter: Check off current item
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     if (activeIndex !== -1) this.toggleCheck(activeIndex);
                 }
                 
-                // ArrowUp: Revert previous step (uncheck current and previous)
                 if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    // If all checked (activeIndex -1), uncheck last item
                     if (activeIndex === -1) {
                          const lastIndex = list.items.length - 1;
                          if (lastIndex >= 0) this.toggleCheck(lastIndex);
                     } else if (activeIndex > 0) {
-                        // Uncheck the item before the current active one
                         this.toggleCheck(activeIndex - 1);
                     }
                 }
@@ -514,7 +499,6 @@
         exportData: function() {
             if (!this.data || this.data.length === 0) return alert("No checklists to export.");
             
-            // Format as simple TXT
             let txtContent = "SEQUENCE EXPORT\n================\n\n";
             this.data.forEach(list => {
                 txtContent += `${list.title.toUpperCase()}\n`;
@@ -1021,8 +1005,8 @@
         copyToClipboard: function(btn, text) {
             navigator.clipboard.writeText(text).then(() => {
                 const originalHtml = btn.innerHTML;
-                btn.innerHTML = `<svg viewBox="0 0 24 24" style="stroke:var(--blue);"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                btn.style.borderColor = "var(--blue)";
+                btn.innerHTML = `<svg viewBox="0 0 24 24" style="stroke:var(--secondary);"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                btn.style.borderColor = "var(--secondary)";
                 setTimeout(() => { btn.innerHTML = originalHtml; btn.style.borderColor = ""; }, 2000);
             });
         },
