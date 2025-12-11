@@ -4,24 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sequence</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23db616b%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22white%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23D2502F%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22%233E6E64%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* --- WARM CORAL DESIGN SYSTEM --- */
+        /* --- EARTHY PALETTE DESIGN SYSTEM --- */
         :root {
-            --bg-body: #F9FAFB;
+            --bg-body: #FAFAF8; /* Very light off-white warm grey */
             --bg-card: #FFFFFF;
-            --text-main: #2D3748; /* softer dark grey */
-            --text-muted: #718096;
-            --border: #E2E8F0;
             
-            /* User Colors */
-            --primary: #db616b; /* Rose Red */
-            --secondary: #ee7959; /* Coral Orange */
+            /* Text Colors */
+            --text-main: #2D3033; 
+            --text-header: #3E6E64; /* Deep Teal for headers */
+            --text-muted: #8CA28F; /* Sage for muted text */
+            
+            /* Your Palette */
+            --rust: #D2502F;
+            --terra: #DC7249;
+            --sage: #8CA28F;
+            --teal: #3E6E64;
+            --sand: #D5C2AC;
+
+            --border: #D5C2AC; /* Sand borders */
             
             --radius: 12px; 
             --radius-sm: 6px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 10px rgba(62, 110, 100, 0.08);
             --font-stack: 'Varela Round', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
@@ -48,40 +55,40 @@
 
         /* Buttons */
         .btn-primary { 
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            background: linear-gradient(135deg, var(--rust), var(--terra)); 
             color: white; border-radius: var(--radius); padding: 10px 24px; font-size: 14px; 
-            box-shadow: 0 4px 10px rgba(219, 97, 107, 0.3);
+            box-shadow: 0 4px 12px rgba(210, 80, 47, 0.25);
         }
         .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.1); }
         
         .btn-secondary { 
-            background: transparent; color: var(--text-main); border: 1px solid var(--border); 
+            background: transparent; color: var(--teal); border: 2px solid var(--border); 
             border-radius: var(--radius); padding: 8px 16px; 
         }
-        .btn-secondary:hover { border-color: var(--secondary); color: var(--secondary); }
+        .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
 
-        .btn-text { background: transparent; color: var(--text-muted); padding: 6px; font-size: 0.9rem; }
-        .btn-text:hover { color: var(--primary); background: rgba(0,0,0,0.05); border-radius: 4px; }
+        .btn-text { background: transparent; color: var(--sage); padding: 6px; font-size: 0.9rem; }
+        .btn-text:hover { color: var(--rust); background: rgba(0,0,0,0.03); border-radius: 4px; }
 
         /* Icon Buttons */
         .btn-icon { 
-            padding: 6px; background: transparent; color: #CBD5E0; border-radius: var(--radius-sm); 
+            padding: 6px; background: transparent; color: #B0B0B0; border-radius: var(--radius-sm); 
             display: flex; align-items: center; justify-content: center; transition: all 0.2s;
             border: 1px solid transparent;
         }
         .btn-icon svg { stroke: currentColor; stroke-width: 2; fill: none; width: 18px; height: 18px; }
         
         /* Interaction States */
-        .btn-icon:hover, .btn-icon:focus { color: var(--primary); background: rgba(219, 97, 107, 0.1); }
-        .btn-icon.active { color: var(--primary); background: rgba(219, 97, 107, 0.1); border-color: rgba(219, 97, 107, 0.2); }
-        .btn-icon.delete:hover { color: #E53E3E; background: #FFF5F5; border-color: #FED7D7; }
+        .btn-icon:hover, .btn-icon:focus { color: var(--rust); background: rgba(210, 80, 47, 0.05); }
+        .btn-icon.active { color: var(--teal); background: rgba(62, 110, 100, 0.1); border-color: rgba(62, 110, 100, 0.2); }
+        .btn-icon.delete:hover { color: #fff; background: var(--rust); border-color: var(--rust); }
 
         /* FAB */
         .btn-fab {
             width: 50px; height: 50px; border-radius: 50%; 
-            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+            background: linear-gradient(135deg, var(--rust), var(--terra)); color: #fff;
             font-size: 28px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(238, 121, 89, 0.4); border: none; padding: 0; line-height: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(210, 80, 47, 0.3); border: none; padding: 0; line-height: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .btn-fab:hover { transform: scale(1.05) rotate(90deg); }
 
@@ -94,13 +101,14 @@
         /* Title Container */
         .header-title-group { display: flex; flex-direction: column; }
         h1 { 
-            color: var(--text-main); font-size: 1.8rem; font-weight: 700; margin: 0; 
-            background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            color: var(--text-header); font-size: 1.8rem; font-weight: 700; margin: 0; 
+            /* Subtle gradient text */
+            background: linear-gradient(90deg, var(--rust), var(--terra)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .sync-badge {
-            font-size: 10px; font-weight: 600; background: #FFF5F5; color: var(--primary); 
+            font-size: 10px; font-weight: 600; background: #fff; color: var(--sage); 
             padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-            border: 1px solid rgba(219, 97, 107, 0.2); width: fit-content; margin-top: 4px;
+            border: 1px solid var(--sand); width: fit-content; margin-top: 4px;
         }
 
         /* Actions Container */
@@ -109,12 +117,12 @@
         /* Profile & Export Buttons (Pill Shape) */
         .pill-btn {
             display: flex; align-items: center; gap: 8px;
-            background: white; border: 1px solid var(--border);
+            background: white; border: 2px solid var(--sand);
             padding: 6px 14px; border-radius: 20px;
-            font-size: 0.85rem; color: var(--text-main);
-            cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-size: 0.85rem; color: var(--teal);
+            cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(213, 194, 172, 0.15);
         }
-        .pill-btn:hover { border-color: var(--secondary); color: var(--secondary); transform: translateY(-1px); }
+        .pill-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-1px); }
         .pill-btn span { font-weight: 600; }
 
         /* Login View */
@@ -124,29 +132,29 @@
         }
         .login-card {
             background: var(--bg-card); padding: 50px; border-radius: 24px;
-            border: 1px solid white;
+            border: 2px solid var(--sand);
             box-shadow: var(--shadow); max-width: 400px; width: 100%;
         }
         .btn-google {
-            background: white; border: 1px solid var(--border); color: #333;
+            background: white; border: 2px solid var(--border); color: var(--text-main);
             width: 100%; padding: 12px; border-radius: var(--radius);
             display: flex; align-items: center; justify-content: center; gap: 10px;
             font-size: 1rem; margin-top: 25px; font-weight: 600;
         }
-        .btn-google:hover { background: #f9f9f9; border-color: #ccc; }
+        .btn-google:hover { background: #fdfdfd; border-color: var(--teal); color: var(--teal); }
 
         /* Dashboard & Search */
         #dashboard-view .checklist-grid { display: grid; gap: 12px; }
         
         .search-bar {
-            width: 100%; padding: 14px 18px; border: 1px solid var(--border); 
+            width: 100%; padding: 14px 18px; border: 2px solid var(--sand); 
             background: var(--bg-card); color: var(--text-main);
             border-radius: var(--radius); margin-bottom: 25px; 
             font-size: 1rem; transition: all 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
-        .search-bar:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(238, 121, 89, 0.1); }
-        .search-bar::placeholder { color: #A0AEC0; }
+        .search-bar:focus { outline: none; border-color: var(--rust); box-shadow: 0 0 0 3px rgba(210, 80, 47, 0.1); }
+        .search-bar::placeholder { color: var(--sage); opacity: 0.8; }
 
         .checklist-card {
             background: var(--bg-card); padding: 14px 20px; border-radius: var(--radius); 
@@ -156,87 +164,87 @@
             cursor: default;
         }
         .checklist-card:hover, .checklist-card:focus { 
-            transform: translateY(-2px); border-color: var(--secondary); outline: none;
-            box-shadow: 0 8px 20px rgba(238, 121, 89, 0.1);
+            transform: translateY(-2px); border-color: var(--terra); outline: none;
+            box-shadow: 0 8px 20px rgba(210, 80, 47, 0.1);
         }
         
         /* Card Circle Button */
         .card-start-btn {
             width: 36px; height: 36px; border-radius: 50%;
-            border: 2px solid #E2E8F0; color: #CBD5E0;
+            border: 2px solid var(--sand); color: var(--sand);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.2s; flex-shrink: 0;
         }
-        .checklist-card:hover .card-start-btn { border-color: var(--primary); color: var(--primary); }
-        .checklist-card:focus .card-start-btn { border-color: var(--primary); color: var(--primary); background: rgba(219, 97, 107, 0.05); }
+        .checklist-card:hover .card-start-btn { border-color: var(--rust); color: var(--rust); }
+        .checklist-card:focus .card-start-btn { border-color: var(--rust); color: var(--rust); background: rgba(210, 80, 47, 0.05); }
 
         .card-content { flex-grow: 1; }
-        .card-content h3 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-main); }
-        .card-content .card-stats { font-size: 0.75rem; color: #A0AEC0; margin-top: 4px; }
+        .card-content h3 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-header); }
+        .card-content .card-stats { font-size: 0.75rem; color: var(--sage); margin-top: 4px; }
         
         .card-actions { display: flex; gap: 5px; opacity: 0; transition: 0.2s; }
         .checklist-card:hover .card-actions, .checklist-card:focus-within .card-actions { opacity: 1; }
         
         /* Editor */
         #editor-view { 
-            background: var(--bg-card); padding: 30px; border-radius: 24px; border: 1px solid white;
+            background: var(--bg-card); padding: 30px; border-radius: 24px; border: 1px solid var(--sand);
             box-shadow: var(--shadow); flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; 
         }
         #edit-title {
-            width: 100%; border: none; font-size: 1.6rem; font-weight: 700; color: var(--text-main);
+            width: 100%; border: none; font-size: 1.6rem; font-weight: 700; color: var(--teal);
             padding: 10px 0; outline: none; background: transparent; border-bottom: 2px solid transparent;
             margin-bottom: 10px; font-family: var(--font-stack);
         }
-        #edit-title:focus { border-bottom-color: var(--secondary); }
+        #edit-title:focus { border-bottom-color: var(--rust); }
         
         .editor-items-list { margin-bottom: 20px; flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         
-        /* Editor Item - Notebook Feel */
+        /* Editor Item */
         .editor-item { 
             display: flex; align-items: center; gap: 12px; padding: 10px 0; 
-            border-bottom: 1px solid #EDF2F7; /* Visible dividing line */
+            border-bottom: 1px solid #F0F0F0; 
             transition: background-color 0.2s; background: transparent;
             position: relative;
         }
-        .editor-item:focus-within { background: #F7FAFC; }
-        .editor-item.dragging { opacity: 0.5; background: #FFF5F5; border: 1px dashed var(--primary); }
+        .editor-item:focus-within { background: #FCFCFA; }
+        .editor-item.dragging { opacity: 0.5; background: #FFF9F5; border: 1px dashed var(--rust); }
         
         /* Drag Handle */
         .drag-handle { 
-            color: #CBD5E0; cursor: grab; font-size: 1.2rem; transition: 0.2s; 
+            color: var(--sand); cursor: grab; font-size: 1.2rem; transition: 0.2s; 
             padding: 4px; line-height: 0.8; user-select: none;
         }
-        .drag-handle:hover, .editor-item:focus-within .drag-handle { color: var(--primary); }
+        .drag-handle:hover, .editor-item:focus-within .drag-handle { color: var(--rust); }
         
         /* Visual Checkbox Box */
         .editor-checkbox-visual {
-            width: 18px; height: 18px; border: 2px solid #E2E8F0; border-radius: 5px; flex-shrink: 0;
+            width: 18px; height: 18px; border: 2px solid var(--sand); border-radius: 5px; flex-shrink: 0;
             transition: 0.2s; background: white;
         }
-        .editor-item:focus-within .editor-checkbox-visual { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(219, 97, 107, 0.1); }
+        .editor-item:focus-within .editor-checkbox-visual { border-color: var(--rust); box-shadow: 0 0 0 3px rgba(210, 80, 47, 0.1); }
 
         .editor-item input.step-input { 
             flex-grow: 1; border: none; font-size: 1rem; color: var(--text-main); outline: none; 
             font-family: var(--font-stack); background: transparent; padding: 0 4px;
         }
         
-        /* Tool Buttons - Reveal on Focus/Hover */
+        /* Tool Buttons */
         .editor-tools { opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; gap: 4px; }
         .editor-item:hover .editor-tools, .editor-item:focus-within .editor-tools { opacity: 1; pointer-events: auto; }
 
-        /* Panels (Link/Copy/Loop) */
+        /* Panels */
         .editor-extra-panel { 
-            padding: 10px 12px 10px 50px; background: #F7FAFC; border-radius: 8px; border-left: 3px solid var(--border);
+            padding: 10px 12px 10px 50px; background: #FCFCFA; border-radius: 8px; border-left: 3px solid var(--sand);
             font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; width: 100%;
         }
         .panel-row { display: flex; align-items: center; gap: 10px; width: 100%; }
         
         .editor-extra-panel input, .editor-extra-panel select { 
-            padding: 6px; border: 1px solid #E2E8F0; border-radius: 4px; background: white; color: var(--text-main); 
+            padding: 6px; border: 1px solid var(--sand); border-radius: 4px; background: white; color: var(--text-main); 
         }
-        .editor-extra-panel input:focus, .editor-extra-panel select:focus { border-color: var(--secondary); }
+        .editor-extra-panel input:focus, .editor-extra-panel select:focus { border-color: var(--terra); }
         .editor-extra-panel textarea { 
-            width: 100%; padding: 8px; border: 1px solid #E2E8F0; border-radius: 4px; 
+            width: 100%; padding: 8px; border: 1px solid var(--sand); border-radius: 4px; 
             background: white; color: var(--text-main); font-family: monospace; font-size: 0.85rem; resize: vertical; min-height: 60px; 
         }
         
@@ -246,8 +254,10 @@
             display: flex; justify-content: space-between; align-items: center; padding: 20px 0; 
             border-bottom: 1px solid var(--border); background: var(--bg-body); z-index: 20;
         }
-        .runner-title-text { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
-        .timer { font-family: monospace; font-size: 0.9rem; color: var(--primary); background: #FFF5F5; padding: 4px 8px; border-radius: 4px; }
+        .runner-title-text { font-size: 1.1rem; font-weight: 700; color: var(--teal); }
+        
+        /* Timer background uses Sand/Beige to fit the Earthy theme */
+        .timer { font-family: monospace; font-size: 0.9rem; color: var(--teal); background: #EFE6DA; padding: 4px 8px; border-radius: 4px; }
         
         .focus-list { list-style: none; padding: 45vh 30px; flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; scrollbar-width: none; margin: 0; }
         .focus-list::-webkit-scrollbar { display: none; }
@@ -262,43 +272,43 @@
         /* Runner Active State */
         .focus-item.active { 
             background: #fff; transform: scale(1.05); 
-            box-shadow: 0 10px 30px rgba(238, 121, 89, 0.15); 
-            border: 1px solid var(--secondary); opacity: 1; z-index: 10; 
+            box-shadow: 0 10px 30px rgba(210, 80, 47, 0.1); 
+            border: 1px solid var(--rust); opacity: 1; z-index: 10; 
         }
         .focus-item:not(.active) { transform: scale(0.95); opacity: 0.4; filter: grayscale(100%); }
-        .focus-item.completed .focus-text { text-decoration: line-through; color: #A0AEC0; }
+        .focus-item.completed .focus-text { text-decoration: line-through; color: var(--sand); }
         
         /* Runner Checkbox */
         .checkbox-square { 
-            width: 22px; height: 22px; border: 2px solid #CBD5E0; border-radius: 6px; 
+            width: 22px; height: 22px; border: 2px solid var(--sand); border-radius: 6px; 
             display: flex; align-items: center; justify-content: center; color: white; 
             flex-shrink: 0; transition: all 0.2s; font-size: 14px; margin-top: 1px;
         }
-        .focus-item.active .checkbox-square { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(238, 121, 89, 0.2); }
-        .focus-item.completed .checkbox-square { background: var(--primary); border-color: var(--primary); }
+        .focus-item.active .checkbox-square { border-color: var(--rust); box-shadow: 0 0 0 3px rgba(210, 80, 47, 0.2); }
+        .focus-item.completed .checkbox-square { background: var(--teal); border-color: var(--teal); }
         
         .focus-text { font-size: 1.1rem; line-height: 1.4; color: var(--text-main); font-weight: 500; }
         
         .loop-inline-actions { display: flex; gap: 8px; margin-left: auto; }
         .runner-action-btn {
             width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid #eee; background: white; color: var(--text-muted); transition: all 0.2s;
+            border: 1px solid #eee; background: white; color: var(--sage); transition: all 0.2s;
         }
-        .runner-action-btn:hover { border-color: var(--secondary); color: var(--secondary); background: #FFF5F5; }
-        .runner-action-btn.primary { background: var(--secondary); color: white; border-color: var(--secondary); }
-        .runner-action-btn.primary:hover { background: var(--primary); border-color: var(--primary); }
+        .runner-action-btn:hover { border-color: var(--terra); color: var(--terra); background: #FFF9F5; }
+        .runner-action-btn.primary { background: var(--terra); color: white; border-color: var(--terra); }
+        .runner-action-btn.primary:hover { background: var(--rust); border-color: var(--rust); }
         
         .runner-footer { margin-top: auto; text-align: center; padding: 20px; border-top: 1px solid var(--border); background: var(--bg-body); position: sticky; bottom: 0; z-index: 30; }
 
         /* Toast */
         #toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: #2D3748; color: white; padding: 12px 24px; border-radius: 50px;
+            background: var(--teal); color: white; padding: 12px 24px; border-radius: 50px;
             display: flex; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             z-index: 1000; font-size: 0.9rem; animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        #toast button { background: transparent; color: var(--secondary); padding: 0; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; }
+        #toast button { background: transparent; color: var(--sand); padding: 0; font-weight: bold; text-transform: uppercase; font-size: 0.85rem; }
         #toast button:hover { text-decoration: underline; color: #fff; }
     </style>
 </head>
@@ -324,12 +334,14 @@
         <div class="login-card">
             <div style="font-size: 3rem; margin-bottom: 20px; display:inline-block; position:relative;">
                 <svg width="60" height="60" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="#db616b" stroke-width="8" fill="none" stroke-dasharray="60 20" transform="rotate(30 50 50)"/>
-                    <circle cx="50" cy="50" r="25" stroke="#ee7959" stroke-width="8" fill="none" stroke-dasharray="40 30" transform="rotate(-20 50 50)"/>
+                    <circle cx="50" cy="50" r="40" stroke="#D2502F" stroke-width="8" fill="none" stroke-dasharray="60 20" transform="rotate(30 50 50)"/>
+                    <circle cx="50" cy="50" r="25" stroke="#3E6E64" stroke-width="8" fill="none" stroke-dasharray="40 30" transform="rotate(-20 50 50)"/>
+                    <circle cx="80" cy="20" r="6" fill="#DC7249"/>
+                    <circle cx="20" cy="80" r="6" fill="#8CA28F"/>
                 </svg>
             </div>
-            <h1 style="margin: 0; font-size: 2rem; color: var(--text-main);">Sequence</h1>
-            <p style="color: #718096; margin-top: 10px;">Your checklist workflow, synced.</p>
+            <h1 style="margin: 0; font-size: 2rem; color: var(--text-header);">Sequence</h1>
+            <p style="color: var(--sage); margin-top: 10px;">Your checklist workflow, synced.</p>
             
             <button class="btn-google" onclick="window.app.loginGoogle()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20">
@@ -340,14 +352,14 @@
 
     <div id="dashboard-view" class="hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
-            <h2 style="font-size: 0.9rem; color: #A0AEC0; text-transform:uppercase; letter-spacing:1px; font-weight:700;">My Lists</h2>
+            <h2 style="font-size: 0.9rem; color: var(--sage); text-transform:uppercase; letter-spacing:1px; font-weight:700;">My Lists</h2>
             <button class="btn-fab" onclick="window.app.createNew()">+</button>
         </div>
         
         <input type="text" id="search-input" class="search-bar" placeholder="Search checklists..." oninput="window.app.filterChecklists(this.value)">
 
         <div id="checklist-list" class="checklist-grid"></div>
-        <div id="empty-state" class="hidden" style="text-align: center; color: #A0AEC0; margin-top: 80px;">
+        <div id="empty-state" class="hidden" style="text-align: center; color: var(--sage); margin-top: 80px;">
             <p>No checklists found.</p>
         </div>
     </div>
@@ -360,7 +372,7 @@
     <div id="editor-view" class="hidden">
         <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off">
         <div id="editor-items" class="editor-items-list"></div>
-        <div style="display: flex; justify-content: flex-end; gap:15px; border-top: 1px solid #EDF2F7; padding-top: 20px; margin-top: auto;">
+        <div style="display: flex; justify-content: flex-end; gap:15px; border-top: 1px solid var(--border); padding-top: 20px; margin-top: auto;">
             <button class="btn-text" style="font-size:1rem;" onclick="window.app.showDashboard()">Cancel</button>
             <button class="btn-primary" onclick="window.app.saveChecklist()">Save</button>
         </div>
@@ -1005,8 +1017,8 @@
         copyToClipboard: function(btn, text) {
             navigator.clipboard.writeText(text).then(() => {
                 const originalHtml = btn.innerHTML;
-                btn.innerHTML = `<svg viewBox="0 0 24 24" style="stroke:var(--secondary);"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                btn.style.borderColor = "var(--secondary)";
+                btn.innerHTML = `<svg viewBox="0 0 24 24" style="stroke:var(--teal);"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                btn.style.borderColor = "var(--teal)";
                 setTimeout(() => { btn.innerHTML = originalHtml; btn.style.borderColor = ""; }, 2000);
             });
         },
