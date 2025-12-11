@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234DE4F4%22/><path d=%22M30 50 L45 65 L70 35%22 fill=%22none%22 stroke=%22%232E8B57%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        /* --- XERO SOLID FLAT DESIGN SYSTEM --- */
+        :root {
+            --bg-body: #F4F5F6;
+            --bg-card: #FFFFFF;
+            
+            --text-main: #0B3C5D; /* Navy */
+            --text-muted: #555555;
+            --border: #DCDCDC;
+            
+            /* Xero Accents (Solid) */
+            --cyan: #4DE4F4;
+            --blue: #2979FF;
+            --navy-btn: #0B3C5D;
+            --pink: #FF85B3;
+            --grey-btn: #E0E0E0;
+            
+            --radius: 4px; /* Flatter, sharper look */
+            --font-stack: 'Varela Round', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-stack); background-color: var(--bg-body); color: var(--text-main);
+            margin: 0; padding: 0; line-height: 1.5; height: 100vh;
+            display: flex; flex-direction: column; -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px; margin: 0 auto; padding: 24px; width: 100%;
+            flex-grow: 1; display: flex; flex-direction: column; position: relative;
+        }
+
+        .hidden { display: none !important; }
+        
+        button, input, select, textarea { 
+            font-family: var(--font-stack); outline: none; 
+        }
+        button { cursor: pointer; border: none; font-weight: 600; transition: background 0.2s; }
+
+        /* Solid Buttons - No Shadows/Neon */
+        .btn-primary { 
+            background: var(--blue); color: white; 
+            border-radius: var(--radius); padding: 10px 24px; font-size: 14px; 
+        }
+        .btn-primary:hover { background: #0056D6; }
+        
+        .btn-secondary { 
+            background: white; color: var(--text-main); border: 2px solid var(--border); 
+            border-radius: var(--radius); padding: 8px 16px; 
+        }
+        .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+        .btn-text { background: transparent; color: var(--text-muted); padding: 6px; font-size: 0.9rem; }
+        .btn-text:hover { color: var(--text-main); background: #eee; border-radius: 4px; }
+
+        /* Icon Buttons */
+        .btn-icon { 
+            padding: 6px; background: transparent; color: #999; border-radius: var(--radius); 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-icon svg { stroke: currentColor; stroke-width: 2; fill: none; width: 18px; height: 18px; }
+        .btn-icon:hover { color: var(--text-main); background: #eee; }
+        .btn-icon.active { color: white; background: var(--blue); }
+        .btn-icon.delete:hover { color: white; background: var(--pink); }
+
+        /* FAB */
+        .btn-fab {
+            width: 48px; height: 48px; border-radius: 50%; 
+            background: var(--blue); color: #fff;
+            font-size: 24px; display: flex; align-items: center; justify-content: center;
+            border: none; padding: 0; line-height: 1;
+        }
+        .btn-fab:hover { background: #0056D6; }
+
+        /* Header */
+        header { 
+            display: flex; flex-direction: row; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding: 10px 0;
+        }
+        h1 { color: var(--text-main); font-size: 1.8rem; font-weight: 700; margin: 0; }
+        
+        .pill-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: white; border: 2px solid var(--border);
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 0.85rem; color: var(--text-main);
+            cursor: pointer;
+        }
+        .pill-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+        /* Login */
+        #login-view {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; flex-grow: 1; text-align: center;
+        }
+        .login-card {
+            background: var(--bg-card); padding: 50px; border-radius: var(--radius);
+            border: 1px solid var(--border); max-width: 400px; width: 100%;
+        }
+        .btn-google {
+            background: white; border: 2px solid var(--border); color: #333;
+            width: 100%; padding: 12px; border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 1rem; margin-top: 25px; font-weight: 600;
+        }
+        .btn-google:hover { border-color: #999; }
+
+        /* Dashboard */
+        #dashboard-view { display: flex; flex-direction: column; height: 100%; }
+        
+        .search-bar {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--border); 
+            background: white; color: var(--text-main);
+            border-radius: var(--radius); margin-bottom: 20px; font-size: 1rem;
+        }
+        .search-bar:focus { outline: none; border-color: var(--blue); }
+
+        .checklist-grid { display: grid; gap: 10px; flex-grow: 1; align-content: start; overflow-y: auto; }
+
+        .checklist-card {
+            background: white; padding: 16px; border-radius: var(--radius); 
+            border: 1px solid var(--border); display: flex; align-items: center; gap: 15px;
+            transition: border-color 0.2s;
+        }
+        .checklist-card:hover, .checklist-card:focus { border-color: var(--cyan); outline: none; }
+        
+        .card-start-btn {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid #ccc; color: #ccc;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .checklist-card:hover .card-start-btn { border-color: var(--blue); color: var(--blue); }
+
+        .card-content h3 { margin: 0; font-size: 1rem; font-weight: 600; }
+        .card-content .card-stats { font-size: 0.75rem; color: #999; }
+        .card-actions { display: flex; gap: 5px; opacity: 0; }
+        .checklist-card:hover .card-actions, .checklist-card:focus-within .card-actions { opacity: 1; }
+
+        /* Footer */
+        .app-footer {
+            margin-top: auto; padding-top: 20px; border-top: 2px solid var(--border);
+            text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .sync-text { font-size: 0.8rem; color: #999; font-weight: 500; }
+        .export-link { 
+            color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 600; 
+            border-bottom: 1px solid transparent; cursor: pointer;
+        }
+        .export-link:hover { border-bottom-color: var(--blue); }
+
+        /* Editor */
+        #editor-view { 
+            background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border);
+            flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+        #edit-title {
+            width: 100%; border: none; font-size: 1.6rem; font-weight: 700; color: var(--text-main);
+            padding: 10px 0; outline: none; border-bottom: 2px solid transparent; margin-bottom: 15px;
+        }
+        #edit-title:focus { border-bottom-color: var(--blue); }
+        
+        .editor-items-list { flex-grow: 1; overflow-y: auto; padding-right: 5px; padding-bottom: 60px; }
+        
+        /* Editor Items */
+        .editor-group-header {
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--blue);
+            font-weight: 700; margin-top: 20px; margin-bottom: 5px; padding-left: 36px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .editor-group-header input { border: none; color: var(--blue); background: transparent; font-weight: 700; width: 100%; }
+
+        .editor-item { 
+            display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; 
+            border-bottom: 1px solid #eee; position: relative;
+        }
+        .editor-item.selected { background: #E6F7FF; }
+        
+        /* Selection Target */
+        .select-target {
+            width: 20px; height: 24px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #ddd; user-select: none;
+        }
+        .select-target:hover { color: var(--blue); }
+        .editor-item.selected .select-target { color: var(--blue); }
+
+        .editor-checkbox-visual {
+            width: 18px; height: 18px; border: 2px solid #ddd; border-radius: 4px; flex-shrink: 0; margin-top: 3px;
+        }
+        .step-input { 
+            flex-grow: 1; border: none; font-size: 1rem; color: var(--text-main); outline: none; background: transparent; 
+        }
+        
+        /* Floating Action Bar (Editor) */
+        .editor-floating-bar {
+            position: absolute; bottom: 20px; left: 20px; right: 20px;
+            background: var(--text-main); color: white; padding: 10px 20px; border-radius: var(--radius);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideUp 0.2s;
+        }
+        .editor-floating-bar button { color: white; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; }
+        .editor-floating-bar button:hover { background: rgba(255,255,255,0.3); }
+
+        /* Panels */
+        .editor-extra-panel { 
+            padding: 10px 10px 10px 42px; background: #f9f9f9; border-left: 4px solid var(--border);
+            display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; width: 100%;
+        }
+        .editor-extra-panel input { padding: 6px; border: 1px solid #ddd; border-radius: 4px; width: 100%; }
+
+        /* RUNNER - Split View */
+        #runner-view { display: flex; flex-direction: row; height: 100%; background: white; }
+        
+        /* Runner Left (Groups) */
+        .runner-sidebar {
+            width: 240px; background: #F4F5F6; border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 20px; flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .runner-sidebar-title { font-size: 0.8rem; font-weight: 700; color: #999; margin-bottom: 15px; text-transform: uppercase; }
+        .group-marker {
+            padding: 10px 12px; margin-bottom: 8px; border-radius: var(--radius);
+            color: #777; font-size: 0.9rem; font-weight: 600; transition: all 0.3s;
+        }
+        .group-marker.active {
+            background: var(--blue); color: white; transform: translateX(5px);
+        }
+
+        /* Runner Right (Items) */
+        .runner-content { flex-grow: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .runner-header { 
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; 
+            border-bottom: 1px solid var(--border); background: white;
+        }
+        .timer { font-family: monospace; font-size: 0.9rem; color: var(--blue); background: #E6F7FF; padding: 4px 8px; border-radius: 4px; }
+        
+        .focus-list { 
+            list-style: none; padding: 30vh 40px; flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; 
+            margin: 0;
+        }
+        .focus-group-header {
+            font-size: 0.8rem; color: #999; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; margin-top: 20px;
+        }
+        
+        .focus-item { 
+            padding: 16px 20px; margin-bottom: 10px; border-radius: 6px; background: transparent; 
+            transition: all 0.3s; display: flex; flex-direction: column; gap: 10px; 
+            cursor: pointer; border: 1px solid transparent;
+        }
+        .focus-item.active { 
+            background: white; border: 2px solid var(--blue); opacity: 1; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transform: scale(1.02);
+        }
+        .focus-item:not(.active) { opacity: 0.5; }
+        .focus-item.completed .focus-text { text-decoration: line-through; color: #aaa; }
+        
+        .checkbox-square { 
+            width: 22px; height: 22px; border: 2px solid #ccc; border-radius: 4px; 
+            display: flex; align-items: center; justify-content: center; color: white; margin-top: 2px;
+        }
+        .focus-item.active .checkbox-square { border-color: var(--blue); }
+        .focus-item.completed .checkbox-square { background: var(--blue); border-color: var(--blue); }
+        
+        .runner-footer { 
+            margin-top: auto; text-align: center; padding: 20px; border-top: 1px solid var(--border); background: white; 
+        }
+
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--text-main); color: white; padding: 12px 24px; border-radius: 50px;
+            display: flex; align-items: center; gap: 15px; z-index: 1000; font-size: 0.9rem;
+        }
+        #toast button { color: var(--cyan); background: transparent; }
+        
+        /* Mobile adjustment for Split View */
+        @media (max-width: 600px) {
+            #runner-view { flex-direction: column; }
+            .runner-sidebar { width: 100%; height: 60px; flex-direction: row; align-items: center; padding: 10px; overflow-x: auto; border-right: none; border-bottom: 1px solid var(--border); }
+            .runner-sidebar-title { display: none; }
+            .group-marker { margin-bottom: 0; margin-right: 10px; white-space: nowrap; }
+            .group-marker.active { transform: translateY(-2px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header id="app-header" class="hidden">
+        <h1>Sequence</h1>
+        <button class="pill-btn" onclick="window.app.logout()" title="Sign Out">
+            <span id="user-name">Profile</span>
+        </button>
+    </header>
+
+    <div id="login-view" class="hidden">
+        <div class="login-card">
+            <h1 style="margin: 0; font-size: 2rem; color: var(--text-main);">Sequence</h1>
+            <p style="color: #666; margin-top: 10px;">Your checklist workflow.</p>
+            <button class="btn-google" onclick="window.app.loginGoogle()">Sign in with Google</button>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+            <h2 style="font-size: 0.9rem; color: #555; text-transform:uppercase; letter-spacing:1px; font-weight:700;">My Lists</h2>
+            <button class="btn-fab" onclick="window.app.createNew()">+</button>
+        </div>
+        
+        <input type="text" id="search-input" class="search-bar" placeholder="Search checklists..." oninput="window.app.filterChecklists(this.value)">
+
+        <div id="checklist-list" class="checklist-grid"></div>
+        <div id="empty-state" class="hidden" style="text-align: center; color: #999; margin-top: 40px;">
+            <p>No checklists found.</p>
+        </div>
+
+        <div class="app-footer">
+            <div id="sync-status" class="sync-text">Connecting...</div>
+            <a class="export-link" onclick="window.app.exportData()">Export all checklists</a>
+        </div>
+    </div>
+
+    <div id="toast" class="hidden">
+        <span>Checklist deleted.</span>
+        <button onclick="window.app.undoDelete()">Undo</button>
+    </div>
+
+    <div id="editor-view" class="hidden">
+        <input type="text" id="edit-title" placeholder="Checklist Name" autocomplete="off">
+        <div id="editor-items" class="editor-items-list"></div>
+        
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 20px; background: white;">
+             <button class="btn-text" onclick="window.app.showDashboard()">Cancel</button>
+             <button class="btn-primary" onclick="window.app.saveChecklist()">Save Changes</button>
+        </div>
+
+        <div id="selection-bar" class="editor-floating-bar hidden">
+            <span id="selection-count">0 items selected</span>
+            <button onclick="window.app.createGroupFromSelection()">Group Items</button>
+        </div>
+    </div>
+
+    <div id="runner-view" class="hidden">
+        <div class="runner-sidebar">
+            <div class="runner-sidebar-title">Structure</div>
+            <div id="runner-groups-container"></div>
+        </div>
+        <div class="runner-content">
+            <div class="runner-header">
+                <div style="font-weight:700; color:var(--text-main);" id="runner-title">Title</div>
+                <div id="runner-timer" class="timer">00:00</div>
+            </div>
+            <ul id="runner-list" class="focus-list"></ul>
+            <div class="runner-footer">
+                <button id="btn-complete" class="btn-primary hidden" style="width: 100%;" onclick="window.app.finishRun()">Done</button>
+                <button id="btn-abort" class="btn-text" onclick="window.app.showDashboard()">Abort</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+    import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2geub7AeCv5ee6G9Chl57Am_Hw8KZ3TA",
+      authDomain: "checklistflow-f9fe5.firebaseapp.com",
+      projectId: "checklistflow-f9fe5",
+      storageBucket: "checklistflow-f9fe5.firebasestorage.app",
+      messagingSenderId: "630257615694",
+      appId: "1:630257615694:web:f76c78a6104a4b0d6b941f"
+    };
+
+    const fbApp = initializeApp(firebaseConfig);
+    const auth = getAuth(fbApp);
+    const db = getFirestore(fbApp);
+    const appId = 'checklist-app-v3';
+    
+    let currentUser = null;
+
+    window.app = {
+        data: [], 
+        filteredData: [],
+        activeId: null,
+        timerInterval: null,
+        startTime: null,
+        dragSrcEl: null,
+        deletedItem: null,
+        deleteTimeout: null,
+        
+        // Editor Selection State
+        lastSelectedIndex: -1,
+        selectedIndices: new Set(),
+
+        init: async function() {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    this.updateUIForLogin(true, user);
+                    this.setupRealtimeListener();
+                } else {
+                    currentUser = null;
+                    this.updateUIForLogin(false);
+                }
+            });
+            this.setupSearchNavigation();
+            this.setupRunnerNavigation();
+        },
+
+        setupSearchNavigation: function() {
+            document.getElementById('search-input').addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const firstCard = document.querySelector('.checklist-card');
+                    if (firstCard) firstCard.focus();
+                }
+            });
+        },
+
+        setupRunnerNavigation: function() {
+            document.addEventListener('keydown', (e) => {
+                const runnerView = document.getElementById('runner-view');
+                if (runnerView.classList.contains('hidden') || !this.activeId) return;
+
+                const list = this.data.find(l => l.id === this.activeId);
+                if (!list) return;
+
+                const activeIndex = list.items.findIndex(i => !i.checked);
+
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (activeIndex !== -1) this.toggleCheck(activeIndex);
+                }
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (activeIndex === -1) {
+                         const lastIndex = list.items.length - 1;
+                         if (lastIndex >= 0) this.toggleCheck(lastIndex);
+                    } else if (activeIndex > 0) {
+                        this.toggleCheck(activeIndex - 1);
+                    }
+                }
+            });
+        },
+
+        updateUIForLogin: function(isLoggedIn, user = null) {
+            const views = ['login-view', 'dashboard-view', 'editor-view', 'runner-view'];
+            views.forEach(id => document.getElementById(id).classList.add('hidden'));
+            const appHeader = document.getElementById('app-header');
+
+            if (isLoggedIn) {
+                appHeader.classList.remove('hidden');
+                document.getElementById('user-name').innerText = user.email ? user.email.split('@')[0] : 'Profile';
+                this.updateSyncStatus();
+                this.showDashboard();
+            } else {
+                document.getElementById('login-view').classList.remove('hidden');
+                appHeader.classList.add('hidden');
+            }
+        },
+
+        loginGoogle: async function() {
+            const provider = new GoogleAuthProvider();
+            try { await signInWithPopup(auth, provider); } catch (error) { alert("Login failed"); }
+        },
+
+        logout: async function() {
+            if(confirm("Sign out?")) { await signOut(auth); }
+        },
+
+        exportData: function() {
+            if (!this.data || this.data.length === 0) return alert("No checklists to export.");
+            
+            let txtContent = "SEQUENCE EXPORT\n================\n\n";
+            this.data.forEach(list => {
+                txtContent += `${list.title.toUpperCase()}\n`;
+                let currentGroup = "";
+                list.items.forEach(item => {
+                    if (item.group && item.group !== currentGroup) {
+                        currentGroup = item.group;
+                        txtContent += `\n[ ${currentGroup} ]\n`;
+                    }
+                    txtContent += `- ${item.text}\n`;
+                });
+                txtContent += `\n----------------\n\n`;
+            });
+
+            const blob = new Blob([txtContent], {type: "text/plain"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sequence_export.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        },
+
+        updateSyncStatus: function() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            document.getElementById('sync-status').innerText = `Synced: ${timeStr}, ${dateStr}`;
+        },
+
+        setupRealtimeListener: function() {
+            if (!currentUser) return;
+            const q = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists');
+            onSnapshot(q, (snapshot) => {
+                const newData = [];
+                snapshot.forEach((doc) => newData.push({ ...doc.data(), id: doc.id }));
+                if (this.deletedItem) {
+                    this.data = newData.filter(item => item.id !== this.deletedItem.id);
+                } else {
+                    this.data = newData;
+                }
+                this.data.sort((a, b) => (b.stats?.runCount || 0) - (a.stats?.runCount || 0));
+                this.filteredData = [...this.data];
+                this.updateSyncStatus();
+                
+                if (this.activeId && !document.getElementById('runner-view').classList.contains('hidden')) {
+                    const activeList = this.data.find(l => l.id === this.activeId);
+                    if (activeList) this.renderRunnerList(activeList);
+                } else if (!this.activeId && !document.getElementById('dashboard-view').classList.contains('hidden')) {
+                    this.filterChecklists(document.getElementById('search-input').value);
+                }
+            });
+        },
+
+        showDashboard: function() {
+            this.stopTimer();
+            this.activeId = null;
+            ['editor-view', 'runner-view'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            this.filterChecklists(document.getElementById('search-input').value);
+        },
+
+        filterChecklists: function(query) {
+            if (!query) {
+                this.filteredData = this.data;
+            } else {
+                const lower = query.toLowerCase();
+                this.filteredData = this.data.filter(l => l.title.toLowerCase().includes(lower));
+            }
+            this.renderDashboardList();
+        },
+
+        renderDashboardList: function() {
+            const listEl = document.getElementById('checklist-list');
+            listEl.innerHTML = '';
+            if (this.filteredData.length === 0) return document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('empty-state').classList.add('hidden');
+
+            this.filteredData.forEach((list) => {
+                const runs = list.stats?.runCount || 0;
+                const card = document.createElement('div');
+                card.className = 'checklist-card';
+                card.tabIndex = 0; 
+                
+                card.onkeydown = (e) => {
+                    if (e.key === 'Enter') window.app.run(list.id);
+                };
+
+                card.innerHTML = `
+                    <div class="card-start-btn" onclick="window.app.run('${list.id}')">
+                         <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor"><path d="M13.5 7.13397C14.1667 7.51887 14.1667 8.48113 13.5 8.86603L1.5 15.7942C0.833334 16.1791 0 15.698 0 14.9282L0 1.0718C0 0.301997 0.833333 -0.179129 1.5 0.205771L13.5 7.13397Z"/></svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>${list.title}</h3>
+                        <div class="card-stats">${runs} runs • ${list.items.length} steps</div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-btn" onclick="window.app.edit('${list.id}')">Edit</div>
+                        <div class="action-btn" onclick="event.stopPropagation(); window.app.deleteChecklist('${list.id}')">Delete</div>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        },
+
+        createNew: function() { 
+            this.activeId = null; 
+            this.renderEditor('', []); 
+            setTimeout(() => document.getElementById('edit-title').focus(), 100);
+        },
+        
+        edit: function(id) {
+            this.activeId = id;
+            const list = this.data.find(l => l.id === id);
+            this.renderEditor(list.title, JSON.parse(JSON.stringify(list.items)));
+        },
+
+        deleteChecklist: function(id) {
+            const item = this.data.find(l => l.id === id);
+            if (!item) return;
+            this.deletedItem = item;
+            this.data = this.data.filter(l => l.id !== id);
+            this.filterChecklists(document.getElementById('search-input').value);
+            document.getElementById('toast').classList.remove('hidden');
+            if (this.deleteTimeout) clearTimeout(this.deleteTimeout);
+            this.deleteTimeout = setTimeout(async () => {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id));
+                this.deletedItem = null;
+                document.getElementById('toast').classList.add('hidden');
+            }, 5000);
+        },
+
+        undoDelete: function() {
+            if (!this.deletedItem) return;
+            clearTimeout(this.deleteTimeout);
+            this.data.push(this.deletedItem);
+            this.deletedItem = null;
+            this.filterChecklists(document.getElementById('search-input').value);
+            document.getElementById('toast').classList.add('hidden');
+        },
+
+        /* --- EDITOR LOGIC --- */
+        
+        renderEditor: function(title, items) {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('editor-view').classList.remove('hidden');
+            document.getElementById('edit-title').value = title;
+            this.selectedIndices.clear();
+            this.updateSelectionUI();
+
+            const container = document.getElementById('editor-items');
+            container.innerHTML = '';
+            if (items.length === 0) items = [{text:''}]; 
+            
+            // Render with Groups visually
+            let currentGroup = null;
+            
+            items.forEach((item, index) => {
+                // If group changes, insert visual header (not real element in list logic)
+                if (item.group && item.group !== currentGroup) {
+                    currentGroup = item.group;
+                    const header = document.createElement('div');
+                    header.className = 'editor-group-header';
+                    header.innerHTML = `<span>${currentGroup}</span>`;
+                    container.appendChild(header);
+                } else if (!item.group) {
+                    currentGroup = null;
+                }
+                
+                this.addEditorItemDOM(item, index);
+            });
+        },
+
+        addEditorItemDOM: function(item, index) {
+             const container = document.getElementById('editor-items');
+             const newEl = this.createEditorItemEl(item, index);
+             container.appendChild(newEl);
+        },
+
+        createEditorItemEl: function(item, index) {
+            const div = document.createElement('div');
+            div.className = 'editor-item';
+            div.draggable = true; 
+            div.dataset.index = index;
+            
+            div.innerHTML = `
+                <div class="select-target" onclick="window.app.toggleSelection(this, event)">◎</div>
+                <span class="drag-handle" draggable="true">⋮⋮</span>
+                <div class="editor-checkbox-visual"></div>
+                <input type="text" class="step-input" value="${item.text || ''}" placeholder="Step...">
+                <div class="editor-tools">
+                    <button class="btn-icon" onclick="window.app.toggleExtra(this, 'link')" title="Link"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button>
+                    <button class="btn-icon" onclick="this.closest('.editor-item').remove()" title="Remove"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                </div>
+                <div class="editor-extra-panel hidden link-panel"><input type="text" class="url-input" value="${item.url || ''}" placeholder="URL"></div>
+            `;
+            
+            // Listeners
+            const input = div.querySelector('.step-input');
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.saveTempStateAndReload(() => {
+                        const allItems = this.getEditorItemsFromDOM();
+                        const myIdx = allItems.findIndex(i => i.text === item.text); // heuristic
+                        allItems.splice(myIdx + 1, 0, { text: '', group: item.group }); // Inherit group
+                        return allItems;
+                    });
+                }
+            });
+            
+            // Panels
+            if(item.url) div.querySelector('.link-panel').classList.remove('hidden');
+
+            return div;
+        },
+
+        getEditorItemsFromDOM: function() {
+            // Reconstruct array from DOM
+            const items = [];
+            let currentGroup = null;
+            
+            // Iterate over ALL children (headers and items)
+            const children = document.getElementById('editor-items').children;
+            for(let child of children) {
+                if(child.classList.contains('editor-group-header')) {
+                    currentGroup = child.innerText;
+                } else if(child.classList.contains('editor-item')) {
+                    const text = child.querySelector('.step-input').value;
+                    const url = child.querySelector('.url-input').value;
+                    if(text) items.push({ text, url, group: currentGroup, checked: false });
+                }
+            }
+            return items;
+        },
+
+        saveTempStateAndReload: function(modifyCallback) {
+            let items = this.getEditorItemsFromDOM();
+            if(modifyCallback) items = modifyCallback(items);
+            this.renderEditor(document.getElementById('edit-title').value, items);
+        },
+
+        // Selection Logic
+        toggleSelection: function(target, e) {
+            const itemEl = target.closest('.editor-item');
+            const container = document.getElementById('editor-items');
+            const allItems = Array.from(container.querySelectorAll('.editor-item'));
+            const index = allItems.indexOf(itemEl);
+
+            if (e.shiftKey && this.lastSelectedIndex !== -1) {
+                const start = Math.min(this.lastSelectedIndex, index);
+                const end = Math.max(this.lastSelectedIndex, index);
+                for (let i = start; i <= end; i++) this.selectedIndices.add(i);
+            } else {
+                if (this.selectedIndices.has(index)) {
+                    this.selectedIndices.delete(index);
+                } else {
+                    this.selectedIndices.add(index);
+                    this.lastSelectedIndex = index;
+                }
+            }
+            this.updateSelectionUI();
+        },
+
+        updateSelectionUI: function() {
+            const allItems = document.querySelectorAll('.editor-item');
+            allItems.forEach((el, idx) => {
+                if (this.selectedIndices.has(idx)) el.classList.add('selected');
+                else el.classList.remove('selected');
+            });
+            
+            const bar = document.getElementById('selection-bar');
+            if (this.selectedIndices.size > 0) {
+                bar.classList.remove('hidden');
+                document.getElementById('selection-count').innerText = `${this.selectedIndices.size} items selected`;
+            } else {
+                bar.classList.add('hidden');
+            }
+        },
+
+        createGroupFromSelection: function() {
+            const groupName = prompt("Enter Name for this Group (e.g., 'Phase 1'):");
+            if (!groupName) return;
+
+            let items = this.getEditorItemsFromDOM();
+            this.selectedIndices.forEach(idx => {
+                if (items[idx]) items[idx].group = groupName;
+            });
+            
+            this.selectedIndices.clear();
+            this.renderEditor(document.getElementById('edit-title').value, items);
+        },
+
+        saveChecklist: async function() {
+            if (!currentUser) return;
+            const title = document.getElementById('edit-title').value;
+            const items = this.getEditorItemsFromDOM();
+            
+            if (items.length === 0) return alert("Add steps");
+            const id = this.activeId || Date.now().toString();
+            const existingStats = this.activeId ? (this.data.find(l=>l.id===id)?.stats || {}) : { runCount: 0 };
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { title, items, stats: existingStats });
+            this.showDashboard();
+        },
+
+        toggleExtra: function(btn, type) {
+            const panel = btn.closest('.editor-item').querySelector(`.${type}-panel`);
+            panel.classList.toggle('hidden');
+        },
+
+        /* --- RUNNER --- */
+        run: function(id) {
+            const list = this.data.find(l => l.id === id);
+            this.activeId = id;
+            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', id), { items: list.items.map(i => ({...i, checked: false})) });
+            
+            ['dashboard-view', 'editor-view'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('runner-view').classList.remove('hidden');
+            
+            document.getElementById('runner-title').innerText = list.title;
+            document.getElementById('btn-complete').classList.add('hidden');
+            document.getElementById('btn-abort').classList.remove('hidden');
+            
+            this.renderRunnerList(list);
+            this.startTimer();
+        },
+
+        renderRunnerList: function(list) {
+            const listContainer = document.getElementById('runner-list');
+            const groupsContainer = document.getElementById('runner-groups-container');
+            listContainer.innerHTML = '';
+            groupsContainer.innerHTML = '';
+            
+            const activeIndex = list.items.findIndex(i => !i.checked);
+            let activeGroup = null;
+
+            // 1. Build Side Group List
+            const groups = [];
+            list.items.forEach(i => {
+                if(i.group && !groups.includes(i.group)) groups.push(i.group);
+            });
+            
+            if (activeIndex !== -1) {
+                activeGroup = list.items[activeIndex].group;
+            }
+
+            groups.forEach(g => {
+                const groupEl = document.createElement('div');
+                groupEl.className = 'group-marker ' + (g === activeGroup ? 'active' : '');
+                groupEl.innerText = g;
+                groupsContainer.appendChild(groupEl);
+            });
+
+            // 2. Build Items List
+            let currentRenderGroup = null;
+
+            list.items.forEach((item, index) => {
+                if (item.group !== currentRenderGroup) {
+                    currentRenderGroup = item.group;
+                    const gh = document.createElement('li');
+                    gh.className = 'focus-group-header';
+                    gh.innerText = currentRenderGroup || "General";
+                    listContainer.appendChild(gh);
+                }
+
+                const li = document.createElement('li');
+                let className = 'focus-item';
+                if (item.checked) className += ' completed';
+                else if (activeIndex === -1) className += ' completed'; // all done
+                else if (index === activeIndex) className += ' active';
+                
+                li.className = className;
+                li.id = `runner-item-${index}`;
+                
+                // Actions
+                let actionsHtml = '<div style="margin-left:auto; display:flex; gap:10px;">';
+                if(item.url) actionsHtml += `<button style="background:#eee; padding:4px 8px; border-radius:4px; font-size:0.8rem;" onclick="event.stopPropagation(); window.open('${item.url}')">Link ↗</button>`;
+                actionsHtml += '</div>';
+
+                li.innerHTML = `
+                    <div class="focus-row-main" onclick="window.app.toggleCheck(${index})">
+                        <div class="checkbox-square">${item.checked ? '✓' : ''}</div>
+                        <span class="focus-text" style="flex-grow:1;">${item.text}</span>
+                        ${actionsHtml}
+                    </div>
+                `;
+                listContainer.appendChild(li);
+            });
+
+            // Auto-scroll logic
+            if (activeIndex !== -1) {
+                setTimeout(() => {
+                    const el = document.getElementById(`runner-item-${activeIndex}`);
+                    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Scroll sidebar
+                    const activeGroupEl = groupsContainer.querySelector('.active');
+                    if(activeGroupEl) activeGroupEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 50); 
+            } else if (list.items.length > 0) {
+                 this.readyToComplete();
+            }
+        },
+
+        toggleCheck: function(index) {
+            if (!currentUser || !this.activeId) return;
+            const items = [...this.data.find(l => l.id === this.activeId).items];
+            items[index].checked = !items[index].checked;
+            updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items });
+        },
+
+        startTimer: function() {
+            this.startTime = Date.now();
+            this.timerInterval = setInterval(() => {
+                const diff = Math.floor((Date.now() - this.startTime) / 1000);
+                const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                const timeStr = `${m}:${s}`;
+                document.getElementById('runner-timer').innerText = timeStr;
+                const btn = document.getElementById('btn-complete');
+                if(!btn.classList.contains('hidden')) btn.innerText = `Done (${timeStr})`;
+            }, 1000);
+        },
+        stopTimer: function() { clearInterval(this.timerInterval); },
+        readyToComplete: function() {
+            this.stopTimer();
+            document.getElementById('btn-complete').classList.remove('hidden');
+            document.getElementById('btn-abort').classList.add('hidden');
+            const finalTime = document.getElementById('runner-timer').innerText;
+            document.getElementById('btn-complete').innerText = `Done (${finalTime})`;
+        },
+        finishRun: async function() {
+            const list = this.data.find(l => l.id === this.activeId);
+            const stats = { runCount: (list.stats?.runCount || 0) + 1, lastDuration: document.getElementById('runner-timer').innerText };
+            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'checklists', this.activeId), { items: list.items.map(i => ({...i, checked: false})), stats });
+            this.showDashboard();
+        }
+    };
+    window.app.init();
+</script>
+</body>
+</html>
